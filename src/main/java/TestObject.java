@@ -1,5 +1,3 @@
-package com.ztpaiprojekt;
-
 import java.util.Objects;
 
 public class TestObject {

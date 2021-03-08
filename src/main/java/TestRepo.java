@@ -1,5 +1,3 @@
-package com.ztpaiprojekt;
-
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

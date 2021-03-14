@@ -1,3 +1,5 @@
+package test;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

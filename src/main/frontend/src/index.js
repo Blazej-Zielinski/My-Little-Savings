@@ -1,12 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
+import {BrowserRouter, Route} from 'react-router-dom';
 import Test from "./components/Test";
+import LoginView from "./views/LoginView";
+import RegistrationView from "./views/RegistrationView";
+import "./index.css"
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Test/>
-  </React.StrictMode>,
+    <BrowserRouter>
+        <div className="container">
+            <Route exact path="/" component={Test} />
+            <Route exact path="/login" component={LoginView} />
+            <Route exact path="/registration" component={RegistrationView} />
+        </div>
+    </BrowserRouter>,
   document.getElementById('root')
 );
 

@@ -1,0 +1,69 @@
+#LoginViewContainer,#RegistrationViewContainer {
+    height: 100vh;
+    width: 100vw;
+    background-image: linear-gradient(to right top, #009be5, #00aae7, #00b8e5, #00c5df, #00d1d6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.Title {
+    position: fixed;
+    top: 0;
+    text-align: center;
+    color: #fff;
+}
+
+#WalletIcon {
+    margin-right: 1em;
+}
+
+.LoginForm,.RegistrationForm {
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 30vw;
+    border: 1px solid gray;
+    border-radius: 1em;
+    padding: 2em 3em;
+    background-color: #ffffff;
+    -webkit-box-shadow: 5px 5px 15px 0px rgba(0,0,0,0.6);
+    box-shadow: 5px 5px 15px 0px rgba(0,0,0,0.6);
+}
+
+.WelcomeText {
+    color: #505050;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 1.5em;
+    margin: 0 0 0.5em 0;
+}
+
+#LoginViewContainer h2,#RegistrationViewContainer h2 {
+    font-size: 2em;
+    margin: 0 0 0.5em 0;
+}
+
+.TextInput {
+    margin-top: 1em !important;
+    width: 80%;
+}
+
+.LoginButton {
+    width: 80%;
+    margin-top: 1em !important;
+    height: 3em;
+    background-image: linear-gradient(to right top, #009be5, #00aae7, #00b8e5, #00c5df, #00d1d6);
+}
+
+.BottomFormText {
+    width: 80%;
+    color: #505050;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin: 0.3em 0 0 0;
+}

@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import "../css/views/CategoriesView.css"
 import Navigation from "../components/Navigation";
 import Header from "../components/Header";
 import Category from "../components/Category";
@@ -31,6 +30,19 @@ import {
 
 
 const useStyles = makeStyles((theme) => ({
+    categoriesView: {
+        width: "calc(100% - 240px)",
+        minHeight: "100vh",
+        float: "right",
+        backgroundColor: "#EAEFF1",
+    },
+    cardHeader: {
+        display: "flex",
+        height: "5em",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "0 2em",
+    },
     card: {
         minHeight: "30vh",
         width: "80%",
@@ -56,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         alignItems: "center",
     },
-    avatar:{
+    avatar: {
         width: "2em",
         height: "2em",
         fontSize: "1em",
@@ -119,11 +131,11 @@ const CategoriesView = () => {
     };
 
     return (
-        <div id="CategoriesViewContainer">
-            <Header title="Transactions"/>
+        <div id="CategoriesViewContainer" className={classes.categoriesView}>
+            <Header title="Categories"/>
             <Navigation selected={1}/>
             <Paper elevation={5} classes={{root: classes.card}}>
-                <div className="CardHeader">
+                <div className={classes.cardHeader}>
                     <TextField
                         id="date"
                         type="month"

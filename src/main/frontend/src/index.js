@@ -6,7 +6,9 @@ import Test from "./components/Test";
 import LoginView from "./views/LoginView";
 import RegistrationView from "./views/RegistrationView";
 import CategoriesView from "./views/CategoriesView";
+import TransactionView from "./views/TransactionsView";
 import "./index.css"
+
 
 
 ReactDOM.render(
@@ -16,6 +18,7 @@ ReactDOM.render(
             <Route exact path="/login" component={LoginView} />
             <Route exact path="/registration" component={RegistrationView} />
             <Route exact path="/categories" component={CategoriesView} />
+            <Route exact path="/transactions" component={TransactionView} />
         </div>
     </BrowserRouter>,
   document.getElementById('root')

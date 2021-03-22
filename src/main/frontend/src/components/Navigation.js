@@ -42,12 +42,13 @@ const dataForList = [
     }
 ]
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) =>({
     paper: {
         background: "#18202C",
-        color: "#BBB7B7"
+        color: "#BBB7B7",
+        width: 240
     }
-})
+}));
 
 const Navigation = (props) => {
     //ToDo it might be helpful when doing responsive design

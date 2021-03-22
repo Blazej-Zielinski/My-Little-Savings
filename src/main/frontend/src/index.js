@@ -9,7 +9,6 @@ import CategoriesView from "./views/CategoriesView";
 import "./index.css"
 
 
-
 ReactDOM.render(
     <BrowserRouter>
         <div className="container">

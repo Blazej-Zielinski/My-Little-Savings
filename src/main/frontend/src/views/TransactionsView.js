@@ -52,6 +52,13 @@ const useStyles = makeStyles((theme) => ({
     list: {
         padding: theme.spacing(3)
     },
+    addButton: {
+        background: "#009BE5",
+        color: "#ffffff",
+        '&:hover': {
+            backgroundColor: "#008AD4",
+        }
+    },
 }));
 
 const transactions = [

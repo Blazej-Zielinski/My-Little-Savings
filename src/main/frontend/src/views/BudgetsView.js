@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "#008AD4",
         }
     },
+    dialogInputs:{
+        width: "100%"
+    }
 }));
 
 const budgets = [
@@ -128,6 +131,8 @@ const BudgetsView = () => {
                             <DialogContentText>
                                 Create a budget. Set budget name and goal.
                             </DialogContentText>
+                            <TextField id="BudgetName" className="TextInput" label="Name" variant="outlined" classes={{root: classes.dialogInputs}}/>
+                            <TextField id="BudgetGoal" className="TextInput" label="Value" variant="outlined" classes={{root: classes.dialogInputs}}/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">

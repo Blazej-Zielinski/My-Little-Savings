@@ -10,7 +10,7 @@ import {
     DialogContentText,
     DialogTitle,
     Divider, List,
-    Paper
+    Paper, TextField
 } from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faShoppingCart,}
@@ -59,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "#008AD4",
         }
     },
+    dialogInputs:{
+        width: "100%"
+    }
 }));
 
 const transactions = [
@@ -134,6 +137,9 @@ const TransactionView = () => {
                             <DialogContentText>
                                 Create a transaction. Set transaction name and value.
                             </DialogContentText>
+                            <TextField id="TransactionName" className="TextInput" label="Name" variant="outlined" classes={{root: classes.dialogInputs}}/>
+                            <TextField id="TransactionValue" className="TextInput" label="Value" variant="outlined" classes={{root: classes.dialogInputs}}/>
+                            <TextField id="TransactionDay" className="TextInput" label="Day of month" variant="outlined" classes={{root: classes.dialogInputs}}/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">

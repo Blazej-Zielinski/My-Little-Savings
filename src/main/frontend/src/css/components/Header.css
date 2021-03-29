@@ -3,15 +3,19 @@ header .InnerDiv{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding-right: 1em;
 }
 header .UserDiv{
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+}
+
+header .UserDiv span{
+    margin-right: 1em;
 }
 
 header .InnerDiv span{
-    margin-right: 1em;
     font-size: 1.3em;
 }
 

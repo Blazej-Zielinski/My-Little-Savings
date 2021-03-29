@@ -1,9 +1,10 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWallet} from "@fortawesome/free-solid-svg-icons";
-import {Button, Link, TextField} from "@material-ui/core";
+import {Button, TextField} from "@material-ui/core";
 import PasswordField from "../components/PasswordField";
 import React from "react";
 import "../css/views/LoginAndRegistrationView.css"
+import {Link} from "react-router-dom";
 
 const RegistrationView = () => {
     return(
@@ -20,7 +21,7 @@ const RegistrationView = () => {
                     Register
                 </Button>
                 <p className="BottomFormText">Already have an account?
-                    <Link href="login" onClick="preventDefault">
+                    <Link to="/login" className="Link">
                         Login here!
                     </Link>
                 </p>

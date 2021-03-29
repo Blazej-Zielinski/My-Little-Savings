@@ -20,13 +20,19 @@ import {
 import Transaction from "../components/Transaction";
 import {Link} from 'react-router-dom';
 
-
+const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     transactionsView: {
-        width: "calc(100% - 240px)",
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
         minHeight: "100vh",
         float: "right",
         backgroundColor: "#EAEFF1",
+        paddingTop: theme.spacing(3),
+        [theme.breakpoints.down('xs')]: {
+            width: `100%`,
+            marginLeft: 0,
+        },
     },
     cardHeader: {
         display: "flex",
@@ -44,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     card: {
         minHeight: "30vh",
         width: "80%",
-        margin: "4em auto 2em auto",
+        margin: "20vh auto 2em auto",
         borderRadius: "1em",
     },
     avatarHeader: {
@@ -109,6 +115,11 @@ const transactions = [
 const TransactionView = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -121,8 +132,8 @@ const TransactionView = () => {
 
     return (
         <div id="TransactionsViewContainer" className={classes.transactionsView}>
-            <Header title="Transactions"/>
-            <Navigation selected={1}/>
+            <Header title="Transactions" handleDrower={handleDrawerToggle}/>
+            <Navigation data={{selected: 1, mobileOpen: mobileOpen, handleDrawerToggle: handleDrawerToggle}}/>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
                     <Link to="/categories" className={classes.link}>

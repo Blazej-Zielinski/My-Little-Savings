@@ -16,12 +16,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Diagram from "../components/Diagram";
 
+const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     summaryView: {
-        width: "calc(100% - 240px)",
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
         minHeight: "100vh",
         float: "right",
         backgroundColor: "#EAEFF1",
+        paddingTop: theme.spacing(3),
+        [theme.breakpoints.down('xs')]: {
+            width: `100%`,
+            marginLeft: 0,
+        },
     },
     cardHeader: {
         display: "flex",
@@ -33,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     card: {
         minHeight: "30vh",
         width: "80%",
-        margin: "4em auto 2em auto",
+        margin: "20vh auto 2em auto",
         borderRadius: "1em",
     },
     flex:{
@@ -113,6 +120,11 @@ const diagramsData = [
 const SummaryView = () => {
     const classes = useStyles();
     const [date, setDate] = useState('2014-08');
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
     const handleDateChange = (date) => {
         setDate(date.value);
@@ -120,8 +132,8 @@ const SummaryView = () => {
 
     return (
         <div id="#SummaryViewContainer" className={classes.summaryView}>
-            <Header title="Summary"/>
-            <Navigation selected={3}/>
+            <Header title="Summary" handleDrower={handleDrawerToggle}/>
+            <Navigation data={{selected: 3, mobileOpen: mobileOpen, handleDrawerToggle: handleDrawerToggle}}/>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
                     <TextField

@@ -26,16 +26,22 @@ import {
     faSmileBeam,
     faPlane,
     faFileInvoiceDollar,
-    faTshirt
+    faTshirt,
 } from "@fortawesome/free-solid-svg-icons";
 
-
+const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     categoriesView: {
-        width: "calc(100% - 240px)",
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
         minHeight: "100vh",
         float: "right",
         backgroundColor: "#EAEFF1",
+        paddingTop: theme.spacing(3),
+        [theme.breakpoints.down('xs')]: {
+            width: `100%`,
+            marginLeft: 0,
+        },
     },
     cardHeader: {
         display: "flex",
@@ -47,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     card: {
         minHeight: "30vh",
         width: "80%",
-        margin: "4em auto 2em auto",
+        margin: "20vh auto 2em auto",
         borderRadius: "1em",
     },
     textField: {
@@ -78,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
         color: "inherit",
         display: "flex",
         textDecoration: "none"
-    }
+    },
 }));
 
 const categories = [
@@ -119,6 +125,11 @@ const CategoriesView = () => {
     const [date, setDate] = useState('2014-08');
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState([]);
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
     const handleChange = (event) => {
         setSelectedCategory(event.target.value);
@@ -138,8 +149,8 @@ const CategoriesView = () => {
 
     return (
         <div id="CategoriesViewContainer" className={classes.categoriesView}>
-            <Header title="Categories"/>
-            <Navigation selected={1}/>
+            <Header title="Categories" handleDrower={handleDrawerToggle}/>
+            <Navigation data={{selected: 1, mobileOpen: mobileOpen, handleDrawerToggle: handleDrawerToggle}}/>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
                     <TextField

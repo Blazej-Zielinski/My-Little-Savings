@@ -3,12 +3,14 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import "../css/components/Header.css";
 import Avatar from "@material-ui/core/Avatar";
 import Paper from "@material-ui/core/Paper";
+import AppBar from "@material-ui/core/AppBar";
+import IconButton from "@material-ui/core/IconButton";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faBars} from "@fortawesome/free-solid-svg-icons";
+
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-    header: {
-        background: "#009BE5",
-        height: "20vh",
-    },
     paper: {
         background: "#009BE5",
         color: "#ffffff",
@@ -24,15 +26,39 @@ const useStyles = makeStyles((theme) => ({
         display: "inline-block",
         width: theme.spacing(6),
         height: theme.spacing(6)
-    }
+    },
+    appBar: {
+        [theme.breakpoints.up('sm')]: {
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: drawerWidth,
+        },
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+        marginBottom: "auto",
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
+    toolbar: theme.mixins.toolbar,
 }));
 
 const Header = (props) => {
+    const handleDrawerToggle = props.handleDrower
     const classes = useStyles();
 
     return (
-        <header className={classes.header}>
+        <AppBar position="fixed" className={classes.appBar}>
             <Paper classes={{root: classes.paper}} elevation={5}>
+                <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    className={classes.menuButton}
+                >
+                    <FontAwesomeIcon icon={faBars}/>
+                </IconButton>
                 <div>
                     <h1>{props.title}</h1>
                 </div>
@@ -41,11 +67,27 @@ const Header = (props) => {
                         <span>Mark</span>
                         <Avatar src="/Avatar.jpg" sizes="big" classes={{root: classes.avatar}}/>
                     </div>
-                    <p>Your wallet: 2547.55zł</p>
+                    <span>Your wallet: 2547.55zł</span>
                 </div>
             </Paper>
-        </header>
+        </AppBar>
     )
 }
 
 export default Header;
+// <AppBar position="fixed" className={classes.appBar}>
+//     <Toolbar>
+//         <IconButton
+//             color="inherit"
+//             aria-label="open drawer"
+//             edge="start"
+//             onClick={handleDrawerToggle}
+//             className={classes.menuButton}
+//         >
+//             <FontAwesomeIcon icon={faBars}/>
+//         </IconButton>
+//         <Typography variant="h6" noWrap>
+//             Responsive drawer
+//         </Typography>
+//     </Toolbar>
+// </AppBar>

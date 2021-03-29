@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React from "react";
 import {Drawer, List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faWallet, faPiggyBank, faFileAlt, faUser, faTv, faCog, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";

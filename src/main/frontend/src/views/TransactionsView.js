@@ -13,9 +13,13 @@ import {
     Paper, TextField
 } from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus, faShoppingCart,}
-from "@fortawesome/free-solid-svg-icons";
+import {
+    faPlus,
+    faShoppingCart,
+} from "@fortawesome/free-solid-svg-icons";
 import Transaction from "../components/Transaction";
+import {Link} from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
     transactionsView: {
@@ -43,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         margin: "4em auto 2em auto",
         borderRadius: "1em",
     },
-    avatarHeader:{
+    avatarHeader: {
         width: "2em",
         height: "2em",
         fontSize: "0.9em",
@@ -59,8 +63,13 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "#008AD4",
         }
     },
-    dialogInputs:{
+    dialogInputs: {
         width: "100%"
+    },
+    link: {
+        color: "inherit",
+        display: "flex",
+        textDecoration: "none"
     }
 }));
 
@@ -116,12 +125,14 @@ const TransactionView = () => {
             <Navigation selected={1}/>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
-                    <div className={classes.headerTitle}>
-                        <Avatar classes={{root: classes.avatarHeader}} style={{background: "orange"}}>
-                            <FontAwesomeIcon icon={faShoppingCart} style={{color: "#ffffff"}}/>
-                        </Avatar>
-                        Shopping
-                    </div>
+                    <Link to="/categories" className={classes.link}>
+                        <div className={classes.headerTitle}>
+                            <Avatar classes={{root: classes.avatarHeader}} style={{background: "orange"}}>
+                                <FontAwesomeIcon icon={faShoppingCart} style={{color: "#ffffff"}}/>
+                            </Avatar>
+                            Shopping
+                        </div>
+                    </Link>
                     <Button
                         variant="contained"
                         classes={{root: classes.addButton}}
@@ -137,9 +148,12 @@ const TransactionView = () => {
                             <DialogContentText>
                                 Create a transaction. Set transaction name and value.
                             </DialogContentText>
-                            <TextField id="TransactionName" className="TextInput" label="Name" variant="outlined" classes={{root: classes.dialogInputs}}/>
-                            <TextField id="TransactionValue" className="TextInput" label="Value" variant="outlined" classes={{root: classes.dialogInputs}}/>
-                            <TextField id="TransactionDay" className="TextInput" label="Day of month" variant="outlined" classes={{root: classes.dialogInputs}}/>
+                            <TextField id="TransactionName" className="TextInput" label="Name" variant="outlined"
+                                       classes={{root: classes.dialogInputs}}/>
+                            <TextField id="TransactionValue" className="TextInput" label="Value" variant="outlined"
+                                       classes={{root: classes.dialogInputs}}/>
+                            <TextField id="TransactionDay" className="TextInput" label="Day of month" variant="outlined"
+                                       classes={{root: classes.dialogInputs}}/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">

@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Category from "../components/Category";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {green, orange, purple, blue, red} from '@material-ui/core/colors';
+import {Link} from 'react-router-dom';
 import {
     Paper,
     TextField,
@@ -73,6 +74,11 @@ const useStyles = makeStyles((theme) => ({
         height: "2em",
         fontSize: "1em",
     },
+    link: {
+        color: "inherit",
+        display: "flex",
+        textDecoration: "none"
+    }
 }));
 
 const categories = [
@@ -194,7 +200,11 @@ const CategoriesView = () => {
                     </DialogActions>
                 </Dialog>
                 <List classes={{root: classes.list}}>
-                    {categories.map((category, index) => <Category key={index} data={category}/>)}
+                    {categories.map((category, index) =>
+                        <Link to="/transactions" className={classes.link}>
+                            <Category key={index} data={category}/>
+                        </Link>
+                    )}
                 </List>
             </Paper>
         </div>

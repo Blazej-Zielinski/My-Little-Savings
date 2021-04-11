@@ -1,14 +1,28 @@
 package application.controllers;
 
+import application.database.dao.BudgetDao;
+import application.database.models.Budget;
+import application.dto.BudgetInfoDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/budgets")
 public class BudgetsController {
 
+    @Autowired
+    private BudgetDao budgetDao;
+
     @GetMapping("get")
-    public String get(){
-        return "Budgets";
+    public BudgetInfoDto get(){
+        Budget budget = budgetDao.getOne((long) 1);
+        return new BudgetInfoDto(
+                budget.getValue(),
+                budget.getStartDate(),
+                budget.getEndDate(),
+                budget.getCategoryType().getName(),
+                budget.getCategoryType().getColor()
+        );
     }
 
     @PostMapping("add")

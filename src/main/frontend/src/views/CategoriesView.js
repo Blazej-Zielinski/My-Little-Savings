@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Navigation from "../components/Navigation";
 import Header from "../components/Header";
 import Category from "../components/Category";
@@ -28,6 +28,9 @@ import {
     faFileInvoiceDollar,
     faTshirt,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import {getCategoriesURL} from "../assets/properties";
+import iconPicker from "../assets/iconPicker";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -87,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const categories = [
+const categoriesDummyData = [
     {
         title: "Shopping",
         icon: faShoppingCart,
@@ -126,6 +129,14 @@ const CategoriesView = () => {
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [categories,setCategories] = useState([]);
+
+    useEffect(() =>{
+        axios.get(getCategoriesURL).then(resp => {
+            console.log(resp.data);
+            setCategories(resp.data);
+        });
+    },[])
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -189,7 +200,7 @@ const CategoriesView = () => {
                             classes={{root: classes.select}}
 
                         >
-                            {categories.map((category, index) => (
+                            {categoriesDummyData.map((category, index) => (
                                 <MenuItem key={index} value={category}>
                                     <ListItemAvatar>
                                         <Avatar classes={{root: classes.avatar}} style={{background: category.color}}>
@@ -211,11 +222,13 @@ const CategoriesView = () => {
                     </DialogActions>
                 </Dialog>
                 <List classes={{root: classes.list}}>
-                    {categories.map((category, index) =>
-                        <Link to="/transactions" className={classes.link}>
-                            <Category key={index} data={category}/>
-                        </Link>
-                    )}
+                    {
+                        categories.map((category) =>
+                            <Link to="/transactions" className={classes.link} key={category.id}>
+                                <Category data={category} iconImg={iconPicker(category.icon)}/>
+                            </Link>
+                        )
+                    }
                 </List>
             </Paper>
         </div>

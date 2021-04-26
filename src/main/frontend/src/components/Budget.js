@@ -1,4 +1,4 @@
-import {React, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ListItem, ListItemAvatar, ListItemText, Avatar, LinearProgress} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import makeStyles from "@material-ui/core/styles/makeStyles";

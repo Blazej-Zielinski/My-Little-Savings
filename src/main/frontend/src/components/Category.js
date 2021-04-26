@@ -28,13 +28,13 @@ const Category = (props) => {
     const classes = useStyles();
 
     return(
-        <ListItem button classes={{root: classes.listItem}}>
+        <ListItem button classes={{root: classes.lismtItem}}>
             <ListItemAvatar>
                 <Avatar classes={{root: classes.avatar}} style={{background: props.data.color}}>
-                    <FontAwesomeIcon icon={props.data.icon} style={{color: "#ffffff"}}/>
+                    <FontAwesomeIcon icon={props.iconImg} style={{color: "#ffffff"}}/>
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={props.data.title} secondary="Records: 6" />
+            <ListItemText primary={props.data.typeName} secondary="Records: 6" />
             <ListItemText primary={"-567.50 zł"} classes={{primary: classes.categoryCost}}/>
         </ListItem>
     )

@@ -1,9 +1,6 @@
 package application.database.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "category_types")
@@ -20,6 +17,16 @@ public class CategoryType {
 
     @Column(name = "color")
     private String color;
+
+    public CategoryType() {
+    }
+
+    public CategoryType(Long id, String name, String icon, String color) {
+        this.id = id;
+        this.name = name;
+        this.icon = icon;
+        this.color = color;
+    }
 
     public Long getId() {
         return id;

@@ -1,11 +1,14 @@
 package application.database.models;
 
+import application.dto.CategoryInfoDto;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_categories")
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -18,6 +21,20 @@ public class Category {
 
     @Column(name = "date")
     private String date;
+
+    public Category() {
+    }
+
+    public Category(CategoryInfoDto categoryDto) {
+        userId = 1L;
+        categoryType = new CategoryType(
+                categoryDto.getId(),
+                categoryDto.getTypeName(),
+                categoryDto.getIcon(),
+                categoryDto.getColor()
+        );
+        date = categoryDto.getDate();
+    }
 
     public Long getId() {
         return id;

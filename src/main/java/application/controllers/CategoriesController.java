@@ -3,6 +3,7 @@ package application.controllers;
 import application.database.dao.CategoryDao;
 import application.database.models.Category;
 import application.dto.CategoryInfoDto;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,6 @@ public class CategoriesController {
     public List<CategoryInfoDto> getAll(){
         Iterable<Category> categories = categoryDao.findAll();
 
-
         return StreamSupport.stream(categories.spliterator(),false).map(category -> new CategoryInfoDto(
                 category.getId(),
                 category.getCategoryType().getName(),
@@ -45,8 +45,16 @@ public class CategoriesController {
     }
 
     @PostMapping("add")
-    public String add(){
-        return "Category has been added";
+    public CategoryInfoDto add(@RequestBody CategoryInfoDto categoryDto){
+        Category category = new Category(categoryDto);
+        category = categoryDao.save(category);
+        return new CategoryInfoDto(
+                category.getId(),
+                category.getCategoryType().getName(),
+                category.getDate(),
+                category.getCategoryType().getColor(),
+                category.getCategoryType().getIcon()
+        );
     }
 
     @DeleteMapping("delete")

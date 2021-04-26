@@ -20,16 +20,9 @@ import {
     MenuItem, ListItemAvatar, Avatar
 } from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {
-    faPlus,
-    faShoppingCart,
-    faSmileBeam,
-    faPlane,
-    faFileInvoiceDollar,
-    faTshirt,
-} from "@fortawesome/free-solid-svg-icons";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {getCategoriesURL} from "../assets/properties";
+import {getCategoriesURL, postCategory} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 
 const drawerWidth = 240;
@@ -92,40 +85,40 @@ const useStyles = makeStyles((theme) => ({
 
 const categoriesDummyData = [
     {
-        title: "Shopping",
-        icon: faShoppingCart,
+        id: 1,
+        typeName: "Shopping",
         color: orange[500],
-        key: 1
+        icon: "faShoppingCart"
     },
     {
-        title: "Entertainment",
-        icon: faSmileBeam,
-        color: blue[500],
-        key: 2
-    },
-    {
-        title: "Travel",
-        icon: faPlane,
+        id: 2,
+        typeName: "Travel",
         color: green[500],
-        key: 3
+        icon: "faPlane",
     },
     {
-        title: "Bills",
-        icon: faFileInvoiceDollar,
+        id: 3,
+        typeName: "Entertainment",
+        color: blue[500],
+        icon: "faSmileBeam",
+    },
+    {
+        id: 4,
+        typeName: "Bills",
         color: purple[500],
-        key: 4
+        icon: "faFileInvoiceDollar",
     },
     {
-        title: "Clothes",
-        icon: faTshirt,
+        id: 5,
+        typeName: "Clothes",
         color: red[500],
-        key: 5
+        icon: "faTshirt",
     },
 ]
 
 const CategoriesView = () => {
     const classes = useStyles();
-    const [date, setDate] = useState('2014-08');
+    const [date, setDate] = useState('2021-04');
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -137,6 +130,17 @@ const CategoriesView = () => {
             setCategories(resp.data);
         });
     },[])
+
+    const handleAddCategory = () => {
+        axios.post(postCategory,{
+            ...selectedCategory,
+            date: date
+        }).then(resp => {
+            setCategories((prev) => [...prev,resp.data]);
+            console.log(resp.data);
+        });
+        setOpen(false);
+    }
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -204,10 +208,10 @@ const CategoriesView = () => {
                                 <MenuItem key={index} value={category}>
                                     <ListItemAvatar>
                                         <Avatar classes={{root: classes.avatar}} style={{background: category.color}}>
-                                            <FontAwesomeIcon icon={category.icon} style={{color: "#ffffff"}}/>
+                                            <FontAwesomeIcon icon={iconPicker(category.icon)} style={{color: "#ffffff"}}/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    {category.title}
+                                    {category.typeName}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -216,7 +220,7 @@ const CategoriesView = () => {
                         <Button onClick={handleClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={handleClose} color="primary">
+                        <Button onClick={handleAddCategory} color="primary">
                             Confirm
                         </Button>
                     </DialogActions>

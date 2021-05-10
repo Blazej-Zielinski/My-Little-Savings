@@ -21,6 +21,7 @@ import Transaction from "../components/Transaction";
 import {Link, useParams} from 'react-router-dom';
 import axios from "axios";
 import {getTransactions, postTransaction} from "../assets/properties";
+import iconPicker from "../assets/iconPicker";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -123,6 +124,7 @@ const TransactionView = () => {
     const {id} = useParams();
     const [open, setOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [category, setCategory] = useState({});
     const [transactionsList, setTransactionsList] = useState([]);
     const [transaction, setTransaction] = useState({
         name: "",
@@ -132,7 +134,9 @@ const TransactionView = () => {
 
     useEffect(() => {
         axios.get(getTransactions + id).then(resp => {
-            setTransactionsList(resp.data.sort(comparator));
+            const {transactions,...categoryInfo} = resp.data;
+            setCategory(categoryInfo);
+            setTransactionsList(transactions.sort(comparator));
         });
     }, [])
 
@@ -196,10 +200,10 @@ const TransactionView = () => {
                 <div className={classes.cardHeader}>
                     <Link to="/categories" className={classes.link}>
                         <div className={classes.headerTitle}>
-                            <Avatar classes={{root: classes.avatarHeader}} style={{background: "orange"}}>
-                                <FontAwesomeIcon icon={faShoppingCart} style={{color: "#ffffff"}}/>
+                            <Avatar classes={{root: classes.avatarHeader}} style={{background: category.color}}>
+                                <FontAwesomeIcon icon={iconPicker(category.icon)} style={{color: "#ffffff"}}/>
                             </Avatar>
-                            Shopping
+                            {category.typeName}
                         </div>
                     </Link>
                     <Button

@@ -1,13 +1,15 @@
 package application.controllers;
 
+import application.database.dao.CategoryDao;
 import application.database.dao.TransactionDao;
+import application.database.models.Category;
 import application.database.models.Transaction;
 import application.dto.TransactionInfoDto;
+import application.dto.TransactionsAndCategoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -17,6 +19,9 @@ public class TransactionsController {
 
     @Autowired
     private TransactionDao transactionDao;
+
+    @Autowired
+    private CategoryDao categoryDao;
 
     @GetMapping("get")
     public TransactionInfoDto get(){
@@ -29,16 +34,23 @@ public class TransactionsController {
     }
 
     @GetMapping("getAll/{id}")
-    public List<TransactionInfoDto> getAll(@RequestParam("id") Long categoryId){
+    public TransactionsAndCategoryDto getAll(@RequestParam("id") Long categoryId){
         Collection<Transaction> transactions = transactionDao.findAll(categoryId);
+        Category category = categoryDao.getOne(categoryId);
 
-        return transactions.stream()
+        return new TransactionsAndCategoryDto(
+                category.getCategoryType().getName(),
+                category.getDate(),
+                category.getCategoryType().getColor(),
+                category.getCategoryType().getIcon(),
+                transactions.stream()
                 .map(transaction -> new TransactionInfoDto(
                         transaction.getName(),
                         transaction.getValue(),
                         transaction.getDate()
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
     }
 
     @PostMapping("add/{id}")

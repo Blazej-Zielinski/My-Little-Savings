@@ -126,7 +126,6 @@ const CategoriesView = () => {
 
     useEffect(() =>{
         axios.get(getCategoriesURL).then(resp => {
-            console.log(resp.data);
             setCategories(resp.data);
         });
     },[])
@@ -137,7 +136,6 @@ const CategoriesView = () => {
             date: date
         }).then(resp => {
             setCategories((prev) => [...prev,resp.data]);
-            console.log(resp.data);
         });
         setOpen(false);
     }
@@ -228,7 +226,7 @@ const CategoriesView = () => {
                 <List classes={{root: classes.list}}>
                     {
                         categories.map((category) =>
-                            <Link to="/transactions" className={classes.link} key={category.id}>
+                            <Link to={"/transactions/" + category.id} className={classes.link} key={category.id}>
                                 <Category data={category} iconImg={iconPicker(category.icon)}/>
                             </Link>
                         )

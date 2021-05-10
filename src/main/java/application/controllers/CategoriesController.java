@@ -3,7 +3,6 @@ package application.controllers;
 import application.database.dao.CategoryDao;
 import application.database.models.Category;
 import application.dto.CategoryInfoDto;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/categories")
-@CrossOrigin("*")
 public class CategoriesController {
 
     @Autowired
@@ -21,7 +20,7 @@ public class CategoriesController {
 
     @GetMapping("get")
     public CategoryInfoDto get(){
-        Category category = categoryDao.getOne((long) 1);
+        Category category = categoryDao.getOne(1L);
         return new CategoryInfoDto(
                 category.getId(),
                 category.getCategoryType().getName(),

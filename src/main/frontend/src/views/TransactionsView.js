@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -18,7 +18,9 @@ import {
     faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import Transaction from "../components/Transaction";
-import {Link} from 'react-router-dom';
+import {Link,useParams} from 'react-router-dom';
+import axios from "axios";
+import {getTransactions} from "../assets/properties";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -114,8 +116,16 @@ const transactions = [
 
 const TransactionView = () => {
     const classes = useStyles();
+    const { id } = useParams();
     const [open, setOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [transactions,setTransactions] = useState([]);
+
+    useEffect(() =>{
+        axios.get(getTransactions + id).then(resp => {
+            setTransactions(resp.data);
+        });
+    },[])
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);

@@ -15,7 +15,7 @@ public class BudgetsController {
 
     @GetMapping("get")
     public BudgetInfoDto get(){
-        Budget budget = budgetDao.getOne((long) 1);
+        Budget budget = budgetDao.getOne(1L);
         return new BudgetInfoDto(
                 budget.getValue(),
                 budget.getStartDate(),

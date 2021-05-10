@@ -15,7 +15,7 @@ public class UsersController {
 
     @GetMapping("/get")
     public UserInfoDto get(){
-        User user = userDao.getOne((long) 1);
+        User user = userDao.getOne(1L);
         return new UserInfoDto(
                 user.getName(),
                 user.getEmail(),

@@ -31,10 +31,10 @@ const Transaction = (props) => {
     return(
         <ListItem button classes={{root: classes.listItem}}>
             <ListItemAvatar classes={{root: classes.avatar}}>
-                {props.data.day}
+                {props.data.date.substring(0,2)}
             </ListItemAvatar>
-            <ListItemText primary={props.data.title} secondary={props.data.date} classes={{primary: classes.titleText}} />
-            <ListItemText primary={"-67.50 zł"} classes={{primary: classes.categoryCost}}/>
+            <ListItemText primary={props.data.name} secondary={props.data.date} classes={{primary: classes.titleText}} />
+            <ListItemText primary={"-" + props.data.value + "zł"} classes={{primary: classes.categoryCost}}/>
         </ListItem>
     )
 }

@@ -18,7 +18,7 @@ ReactDOM.render(
             <Route exact path="/login" component={LoginView} />
             <Route exact path="/registration" component={RegistrationView} />
             <Route exact path="/categories" component={CategoriesView} />
-            <Route exact path="/transactions" component={TransactionView} />
+            <Route exact path="/transactions/:id" component={TransactionView} />
             <Route exact path="/budgets" component={BudgetsView} />
             <Route exact path="/summary" component={SummaryView} />
         </div>

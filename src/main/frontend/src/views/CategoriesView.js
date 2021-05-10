@@ -137,7 +137,9 @@ const CategoriesView = () => {
         }).then(resp => {
             setCategories((prev) => [...prev,resp.data]);
         });
+
         setOpen(false);
+        setSelectedCategory([]);
     }
 
     const handleDrawerToggle = () => {
@@ -154,6 +156,7 @@ const CategoriesView = () => {
 
     const handleClose = () => {
         setOpen(false);
+        setSelectedCategory([]);
     };
 
     const handleDateChange = (date) => {

@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -18,9 +18,9 @@ import {
     faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import Transaction from "../components/Transaction";
-import {Link,useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import axios from "axios";
-import {getTransactions} from "../assets/properties";
+import {getTransactions, postTransaction} from "../assets/properties";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -114,18 +114,41 @@ const transactions = [
     },
 ]
 
+function comparator(a, b){
+    return (a.date > b.date) ? 1 : (a.date === b.date) ? ((a.date > b.date) ? 1 : -1) : -1
+}
+
 const TransactionView = () => {
     const classes = useStyles();
-    const { id } = useParams();
+    const {id} = useParams();
     const [open, setOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [transactions,setTransactions] = useState([]);
+    const [transactionsList, setTransactionsList] = useState([]);
+    const [transaction, setTransaction] = useState({
+        name: "",
+        value: "",
+        date: ""
+    });
 
-    useEffect(() =>{
+    useEffect(() => {
         axios.get(getTransactions + id).then(resp => {
-            setTransactions(resp.data);
+            setTransactionsList(resp.data.sort(comparator));
         });
-    },[])
+    }, [])
+
+    const handleAddTransaction = () => {
+        axios.post(postTransaction + id, transaction)
+            .then(resp => {
+                setTransactionsList((prev) => [...prev, resp.data].sort(comparator));
+            });
+
+        setOpen(false);
+        setTransaction({
+            name: "",
+            value: "",
+            date: ""
+        });
+    }
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -137,7 +160,32 @@ const TransactionView = () => {
 
     const handleClose = () => {
         setOpen(false);
+        setTransaction({
+            name: "",
+            value: "",
+            date: ""
+        });
     };
+
+    const handleChangeName = (e) => {
+        let tempTransaction = {...transaction};
+        switch (e.target.id) {
+            case "TransactionName":
+                tempTransaction.name = e.target.value;
+                break;
+            case "TransactionValue":
+                tempTransaction.value = e.target.value;
+                break;
+            case "TransactionDay":
+                tempTransaction.date = e.target.value;
+                if (tempTransaction.date > 31)
+                    tempTransaction.date = 31;
+                else if (tempTransaction.date < 0)
+                    tempTransaction.date = 0;
+                break;
+        }
+        setTransaction(tempTransaction);
+    }
 
 
     return (
@@ -170,17 +218,20 @@ const TransactionView = () => {
                                 Create a transaction. Set transaction name and value.
                             </DialogContentText>
                             <TextField id="TransactionName" className="TextInput" label="Name" variant="outlined"
-                                       classes={{root: classes.dialogInputs}}/>
+                                       classes={{root: classes.dialogInputs}} onChange={handleChangeName}
+                                       value={transaction.name} type="text"/>
                             <TextField id="TransactionValue" className="TextInput" label="Value" variant="outlined"
-                                       classes={{root: classes.dialogInputs}}/>
+                                       classes={{root: classes.dialogInputs}} onChange={handleChangeName}
+                                       value={transaction.value} type="number"/>
                             <TextField id="TransactionDay" className="TextInput" label="Day of month" variant="outlined"
-                                       classes={{root: classes.dialogInputs}}/>
+                                       classes={{root: classes.dialogInputs}} onChange={handleChangeName}
+                                       value={transaction.date} type="number"/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">
                                 Cancel
                             </Button>
-                            <Button onClick={handleClose} color="primary">
+                            <Button onClick={handleAddTransaction} color="primary">
                                 Confirm
                             </Button>
                         </DialogActions>
@@ -188,7 +239,7 @@ const TransactionView = () => {
                 </div>
                 <Divider/>
                 <List classes={{root: classes.list}}>
-                    {transactions.map((transaction, index) => <Transaction key={index} data={transaction}/>)}
+                    {transactionsList.map((transaction, index) => <Transaction key={index} data={transaction}/>)}
                 </List>
             </Paper>
         </div>

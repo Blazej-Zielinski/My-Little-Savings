@@ -41,9 +41,11 @@ public class TransactionsController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("add")
-    public String add(){
-        return "Transaction has been added";
+    @PostMapping("add/{id}")
+    public TransactionInfoDto add(@RequestBody TransactionInfoDto transactionInfoDto){
+        Transaction transaction = new Transaction(transactionInfoDto);
+        transactionDao.save(transaction);
+        return transactionInfoDto;
     }
 
     @DeleteMapping("delete")

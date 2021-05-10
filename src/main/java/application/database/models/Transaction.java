@@ -1,5 +1,7 @@
 package application.database.models;
 
+import application.dto.TransactionInfoDto;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,6 +23,16 @@ public class Transaction {
 
     @Column(name = "date")
     private String date;
+
+    public Transaction() {
+    }
+
+    public Transaction(TransactionInfoDto transactionInfoDto) {
+        this.categoryId = 1L;
+        this.name = transactionInfoDto.getName();
+        this.value = transactionInfoDto.getValue();
+        this.date = transactionInfoDto.getDate();
+    }
 
     public Long getId() {
         return id;

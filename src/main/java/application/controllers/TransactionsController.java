@@ -54,8 +54,8 @@ public class TransactionsController {
     }
 
     @PostMapping("add/{id}")
-    public TransactionInfoDto add(@RequestBody TransactionInfoDto transactionInfoDto){
-        Transaction transaction = new Transaction(transactionInfoDto);
+    public TransactionInfoDto add(@RequestParam("id") Long categoryId,@RequestBody TransactionInfoDto transactionInfoDto){
+        Transaction transaction = new Transaction(transactionInfoDto ,categoryId);
         transactionDao.save(transaction);
         return transactionInfoDto;
     }

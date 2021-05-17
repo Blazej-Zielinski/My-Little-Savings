@@ -27,8 +27,8 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(TransactionInfoDto transactionInfoDto) {
-        this.categoryId = 1L;
+    public Transaction(TransactionInfoDto transactionInfoDto, Long categoryId) {
+        this.categoryId = categoryId;
         this.name = transactionInfoDto.getName();
         this.value = transactionInfoDto.getValue();
         this.date = transactionInfoDto.getDate();

@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/login2")
 public class LoginController {
 
     @PostMapping("")

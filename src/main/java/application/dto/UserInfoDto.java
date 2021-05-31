@@ -3,11 +3,13 @@ package application.dto;
 public class UserInfoDto {
     private String username;
     private String email;
+    private String password;
     private String role;
 
-    public UserInfoDto(String username, String email, String role) {
+    public UserInfoDto(String username, String email, String password, String role) {
         this.username = username;
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 
@@ -33,5 +35,13 @@ public class UserInfoDto {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -19,13 +19,9 @@ public class UsersController {
         return new UserInfoDto(
                 user.getName(),
                 user.getEmail(),
+                user.getPassword(),
                 user.getUserRole().getRoleName()
         );
-    }
-
-    @PostMapping("/register")
-    public String registerUser(){
-        return "User has been added";
     }
 
     @DeleteMapping("/delete")

@@ -20,14 +20,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/categories/get").authenticated()
-                .antMatchers("/categories/getAll").hasRole("PREMIUM")
+                .antMatchers("/*").authenticated()
+                .antMatchers("/budgets/*").hasRole("PREMIUM")
                 .and()
                 .addFilter(new JwtFilter(authenticationManager(),secret));
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/login", "/register");
+        web.ignoring().antMatchers(
+                "/login",
+                "/register",
+                "/",
+                "/csrf",
+                "/swagger-ui.html",
+                "/v2/api-docs",
+                "/webjars/**",
+                "/swagger-resources/**");
     }
 }

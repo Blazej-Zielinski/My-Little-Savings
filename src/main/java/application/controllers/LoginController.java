@@ -1,13 +1,12 @@
 package application.controllers;
 
 import application.database.dao.UserDao;
-import application.database.models.Category;
 import application.database.models.User;
 import application.dto.UserCredentials;
 import io.jsonwebtoken.Jwts;
-import application.dto.UserInfoDto;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -21,6 +20,12 @@ public class LoginController {
 
     @Autowired
     private UserDao userDao;
+
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${jwt.expirationDate}")
+    private Long expirationDate;
 
     @PostMapping("/login")
     public String login(@RequestBody UserCredentials userCredentials) {
@@ -36,11 +41,12 @@ public class LoginController {
 
         long currentTimeMillis = System.currentTimeMillis();
         return Jwts.builder()
-                .setSubject(authenticatedUser.get().getName())
-                .claim("roles", authenticatedUser.get().getUserRole().getRoleName())
+                .claim("name", authenticatedUser.get().getName())
+                .claim("userID", authenticatedUser.get().getId())
+                .claim("role", authenticatedUser.get().getUserRole().getRoleName())
                 .setIssuedAt(new Date(currentTimeMillis))
-                .setExpiration(new Date(currentTimeMillis + 20000))
-                .signWith(SignatureAlgorithm.HS512, authenticatedUser.get().getPassword())
+                .setExpiration(new Date(currentTimeMillis + expirationDate))
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 

@@ -1,41 +1,58 @@
 package application.security;
 
 
+import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.impl.TextCodec;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends BasicAuthenticationFilter {
+    private final String secret;
+
+    public JwtFilter(AuthenticationManager authenticationManager,String secret) {
+        super(authenticationManager);
+        this.secret = secret;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
-        String header = httpServletRequest.getHeader("authorization");
 
-        if (header == null || !header.startsWith("Bearer ")) {
+        try {
+            String header = httpServletRequest.getHeader("Authorization");
+            UsernamePasswordAuthenticationToken authResult = getAuthenticationByToken(header);
+            SecurityContextHolder.getContext().setAuthentication(authResult);
+        } catch (ClaimJwtException e) {
             httpServletResponse.sendError(HttpStatus.FORBIDDEN.value());
             return;
-        } else {
-            try {
-                String token = header.substring(7);
-                Claims claims = Jwts.parser().setSigningKey("admin123").parseClaimsJws(token).getBody();
-                httpServletRequest.setAttribute("claims", claims);
-            } catch (Exception e) {
-                httpServletResponse.sendError(HttpStatus.FORBIDDEN.value());
-                return;
-            }
         }
+
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getRequestURI();
-        return "/api/login".equals(path) || "/api/register".equals(path);
+    private UsernamePasswordAuthenticationToken getAuthenticationByToken(String header) {
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(TextCodec.BASE64.decode(secret))
+                .parseClaimsJws(header.replace("Bearer ", ""));
+
+        String username = claimsJws.getBody().get("name").toString();
+        String role = claimsJws.getBody().get("role").toString();
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(role));
+
+        return new UsernamePasswordAuthenticationToken(username, null, authorities);
     }
+
 }

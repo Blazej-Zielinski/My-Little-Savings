@@ -22,7 +22,7 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {getCategoriesURL, postCategory} from "../assets/properties";
+import {getCategoriesURL, postCategory, jwtConfig, jwt, heroku} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 
 const drawerWidth = 240;
@@ -116,6 +116,17 @@ const categoriesDummyData = [
     },
 ]
 
+
+// axios.interceptors.request.use(
+//     config => {
+//         config.headers.authorization = `Bearer ${jwt}`
+//         return config;
+//     },
+//     error => {
+//         return Promise.reject(error);
+//     }
+// )
+
 const CategoriesView = () => {
     const classes = useStyles();
     const [date, setDate] = useState('2021-04');
@@ -125,7 +136,7 @@ const CategoriesView = () => {
     const [categories,setCategories] = useState([]);
 
     useEffect(() =>{
-        axios.get(getCategoriesURL).then(resp => {
+        axios.get(getCategoriesURL,jwtConfig).then(resp => {
             setCategories(resp.data);
         });
     },[])

@@ -3,6 +3,7 @@ package application.controllers;
 import application.database.dao.UserDao;
 import application.database.models.User;
 import application.dto.UserCredentials;
+import application.dto.UserRegistrationInfo;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LoginController {
 
     @Autowired
@@ -51,8 +53,17 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public String registerUser(){
-        return "User has been added";
+    public boolean registerUser(@RequestBody UserRegistrationInfo userInfo){
+        Iterable<User> users = userDao.findAll();
+        boolean isEmailUnique = StreamSupport.stream(users.spliterator(), false)
+                .noneMatch(user -> user.getEmail().equals(userInfo.getEmail()));
+
+        if(!isEmailUnique){
+            return false;
+        }
+
+        userDao.save(new User(userInfo));
+        return true;
     }
 
 }

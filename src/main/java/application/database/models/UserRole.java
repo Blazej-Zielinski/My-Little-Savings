@@ -16,6 +16,13 @@ public class UserRole {
     @Column(name = "permission")
     private int permission;
 
+    public UserRole() {
+    }
+
+    public UserRole(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

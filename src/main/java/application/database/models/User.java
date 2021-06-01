@@ -1,5 +1,7 @@
 package application.database.models;
 
+import application.dto.UserRegistrationInfo;
+
 import javax.persistence.*;
 
 @Entity
@@ -23,6 +25,16 @@ public class User{
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private UserRole userRole;
+
+    public User() {
+    }
+
+    public User(UserRegistrationInfo userInfo) {
+        this.name = userInfo.getName();
+        this.email = userInfo.getEmail();
+        this.password = userInfo.getPassword();
+        userRole = new UserRole(2L);
+    }
 
     public Long getId() {
         return id;

@@ -32,8 +32,15 @@ public class JwtFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
 
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
+        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+
+
         try {
-            String header = httpServletRequest.getHeader("Authorization");
+            String header = httpServletRequest.getHeader("authorization");
             UsernamePasswordAuthenticationToken authResult = getAuthenticationByToken(header);
             SecurityContextHolder.getContext().setAuthentication(authResult);
         } catch (ClaimJwtException e) {

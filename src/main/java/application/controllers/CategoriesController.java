@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/categories")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CategoriesController {
 
     @Autowired

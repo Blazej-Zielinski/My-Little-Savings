@@ -1,42 +1,29 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Header from "../components/Header";
 import Navigation from "../components/Navigation";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
     Avatar,
-    Button,
-    Dialog, DialogActions,
+    Button, CircularProgress,
+    Dialog,
+    DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Divider, List,
-    Paper, TextField
+    Divider,
+    List,
+    Paper,
+    TextField
 } from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {
-    faPlus,
-    faShoppingCart,
-} from "@fortawesome/free-solid-svg-icons";
+import {faPlus,} from "@fortawesome/free-solid-svg-icons";
 import Transaction from "../components/Transaction";
-import {Link, useParams} from 'react-router-dom';
+import {Link, Redirect, useParams} from 'react-router-dom';
 import axios from "axios";
-import {getTransactions, postTransaction} from "../assets/properties";
+import {getTransactions, postTransaction, unauthorizedMessage} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
-    transactionsView: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        minHeight: "100vh",
-        float: "right",
-        backgroundColor: "#EAEFF1",
-        paddingTop: theme.spacing(3),
-        [theme.breakpoints.down('xs')]: {
-            width: `100%`,
-            marginLeft: 0,
-        },
-    },
     cardHeader: {
         display: "flex",
         height: "5em",
@@ -115,35 +102,50 @@ const transactions = [
     },
 ]
 
-function comparator(a, b){
+function comparator(a, b) {
     return (a.date > b.date) ? 1 : (a.date === b.date) ? ((a.date > b.date) ? 1 : -1) : -1
 }
 
-const TransactionView = () => {
+const TransactionView = (props) => {
     const classes = useStyles();
     const {id} = useParams();
     const [open, setOpen] = useState(false);
-    const [mobileOpen, setMobileOpen] = useState(false);
     const [category, setCategory] = useState({});
-    const [transactionsList, setTransactionsList] = useState([]);
+    const [transactionsList, setTransactionsList] = useState({
+        isLoaded: false,
+        data: []
+    });
     const [transaction, setTransaction] = useState({
         name: "",
         value: "",
         date: ""
     });
+    const jwtConfig = {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("jwtToken")
+        }
+    };
+    const setLogged = props.setLogged;
 
     useEffect(() => {
-        axios.get(getTransactions + id).then(resp => {
-            const {transactions,...categoryInfo} = resp.data;
-            setCategory(categoryInfo);
-            setTransactionsList(transactions.sort(comparator));
-        });
+        axios.get(getTransactions + id, jwtConfig)
+            .then(resp => {
+                const {transactions, ...categoryInfo} = resp.data;
+                setCategory(categoryInfo);
+                setTransactionsList({isLoaded: true, data: transactions.sort(comparator)});
+            })
+            .catch(() => {
+                setLogged(() => ({
+                    redirect: true,
+                    message: unauthorizedMessage
+                }));
+            });
     }, [])
 
     const handleAddTransaction = () => {
-        axios.post(postTransaction + id, transaction)
+        axios.post(postTransaction + id, transaction, jwtConfig)
             .then(resp => {
-                setTransactionsList((prev) => [...prev, resp.data].sort(comparator));
+                setTransactionsList(prev => ({isLoaded: true, data: [...prev.data, resp.data].sort(comparator)}));
             });
 
         setOpen(false);
@@ -153,10 +155,6 @@ const TransactionView = () => {
             date: ""
         });
     }
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -169,6 +167,7 @@ const TransactionView = () => {
             value: "",
             date: ""
         });
+        console.log(transactionsList.data)
     };
 
     const handleChangeName = (e) => {
@@ -193,9 +192,7 @@ const TransactionView = () => {
 
 
     return (
-        <div id="TransactionsViewContainer" className={classes.transactionsView}>
-            <Header title="Transactions" handleDrower={handleDrawerToggle}/>
-            <Navigation data={{selected: 1, mobileOpen: mobileOpen, handleDrawerToggle: handleDrawerToggle}}/>
+        <div>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
                     <Link to="/categories" className={classes.link}>
@@ -227,7 +224,8 @@ const TransactionView = () => {
                             <TextField id="TransactionValue" className="TextInput" label="Value" variant="outlined"
                                        classes={{root: classes.dialogInputs}} onChange={handleChangeName}
                                        value={transaction.value} type="number"/>
-                            <TextField id="TransactionDay" className="TextInput" label="Day of month" variant="outlined"
+                            <TextField id="TransactionDay" className="TextInput" label="Day of month"
+                                       variant="outlined"
                                        classes={{root: classes.dialogInputs}} onChange={handleChangeName}
                                        value={transaction.date} type="number"/>
                         </DialogContent>
@@ -243,7 +241,20 @@ const TransactionView = () => {
                 </div>
                 <Divider/>
                 <List classes={{root: classes.list}}>
-                    {transactionsList.map((transaction, index) => <Transaction key={index} data={transaction}/>)}
+                    {
+                        !transactionsList.isLoaded ?
+                            <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                                <CircularProgress size={100} thickness={5}/>
+                            </div>
+                            :
+                            transactionsList.data.length === 0 ?
+                                <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                                    No Data
+                                </div>
+                                :
+                                transactionsList.data.map((transaction, index) => <Transaction key={index}
+                                                                                               data={transaction}/>)
+                    }
                 </List>
             </Paper>
         </div>

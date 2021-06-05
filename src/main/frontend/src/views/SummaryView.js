@@ -16,20 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Diagram from "../components/Diagram";
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
-    summaryView: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        minHeight: "100vh",
-        float: "right",
-        backgroundColor: "#EAEFF1",
-        paddingTop: theme.spacing(3),
-        [theme.breakpoints.down('xs')]: {
-            width: `100%`,
-            marginLeft: 0,
-        },
-    },
     cardHeader: {
         display: "flex",
         height: "5em",
@@ -43,31 +30,31 @@ const useStyles = makeStyles((theme) => ({
         margin: "20vh auto 2em auto",
         borderRadius: "1em",
     },
-    flex:{
+    flex: {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-around",
         padding: theme.spacing(3),
         color: "#C2C2C2"
     },
-    diagrams:{
+    diagrams: {
         display: "flex",
         justifyContent: "space-around",
         alignItems: "flex-start",
         marginTop: "4em",
         minHeight: "60vh",
     },
-    balance:{
+    balance: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         fontSize: "1.2em",
     },
-    plus:{
+    plus: {
         color: "#E51C23",
         fontWeight: "bold"
     },
-    minus:{
+    minus: {
         color: "#039BE5",
         fontWeight: "bold"
     }
@@ -104,36 +91,30 @@ const diagramsData = [
                 title: "Shopping",
                 icon: faShoppingCart,
                 color: "#ff9800",
-                clipPath:" polygon(50% 0, 100% 0, 100% 90%, 50% 50%)",
+                clipPath: " polygon(50% 0, 100% 0, 100% 90%, 50% 50%)",
             },
             {
                 title: "Travel",
                 icon: faPlane,
                 color: "#4caf50",
-                clipPath:" polygon(0 30%, 0 0, 50% 0, 50% 50%)",
+                clipPath: " polygon(0 30%, 0 0, 50% 0, 50% 50%)",
             }
         ]
     }
 ]
 
 
-const SummaryView = () => {
+const SummaryView = (props) => {
     const classes = useStyles();
     const [date, setDate] = useState('2014-08');
-    const [mobileOpen, setMobileOpen] = useState(false);
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    const setLogged = props.setLogged;
 
     const handleDateChange = (date) => {
         setDate(date.value);
     };
 
     return (
-        <div id="#SummaryViewContainer" className={classes.summaryView}>
-            <Header title="Summary" handleDrower={handleDrawerToggle}/>
-            <Navigation data={{selected: 3, mobileOpen: mobileOpen, handleDrawerToggle: handleDrawerToggle}}/>
+        <div>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
                     <TextField

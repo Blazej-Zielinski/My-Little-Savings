@@ -1,29 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import LoginView from "./views/LoginView";
 import RegistrationView from "./views/RegistrationView";
-import CategoriesView from "./views/CategoriesView";
-import TransactionView from "./views/TransactionsView";
-import BudgetsView from "./views/BudgetsView";
-import SummaryView from "./views/SummaryView";
 import "./index.css"
 import Error404 from "./components/Error404";
+import WithContainer from "./views/WithContainer";
+import {loggedRoutesPaths} from "./assets/properties";
 
 ReactDOM.render(
     <BrowserRouter>
-        <div className="container">
-            <Route exact path="/login" component={LoginView} />
-            <Route exact path="/registration" component={RegistrationView} />
-            <Route exact path="/categories" component={CategoriesView} />
-            <Route exact path="/transactions/:id" component={TransactionView} />
-            <Route exact path="/budgets" component={BudgetsView} />
-            <Route exact path="/summary" component={SummaryView} />
-            <Route exact path="*" component={Error404} />
-        </div>
+        <Switch>
+            <Route exact path="/login" render={(props) => <LoginView {...props}/>}/>
+            <Route exact path="/registration" component={RegistrationView}/>
+            <Route exact path={loggedRoutesPaths} component={WithContainer}/>
+            <Route exact path="/*" component={Error404}/>
+        </Switch>
     </BrowserRouter>,
-  document.getElementById('root')
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

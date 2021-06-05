@@ -23,20 +23,7 @@ import {
 import {blue, green, orange} from "@material-ui/core/colors";
 import Budget from "../components/Budget";
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
-    budgetsView: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        minHeight: "100vh",
-        float: "right",
-        backgroundColor: "#EAEFF1",
-        paddingTop: theme.spacing(3),
-        [theme.breakpoints.down('xs')]: {
-            width: `100%`,
-            marginLeft: 0,
-        },
-    },
     cardHeader: {
         display: "flex",
         height: "5em",
@@ -89,15 +76,11 @@ const budgets = [
     },
 ]
 
-const BudgetsView = () => {
+const BudgetsView = (props) => {
     const classes = useStyles();
     const [date, setDate] = useState('2014-08');
     const [open, setOpen] = useState(false);
-    const [mobileOpen, setMobileOpen] = useState(false);
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    const setLogged = props.setLogged;
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -113,9 +96,7 @@ const BudgetsView = () => {
 
 
     return (
-        <div id="#BudgetViewContainer" className={classes.budgetsView}>
-            <Header title="Budgets" handleDrower={handleDrawerToggle}/>
-            <Navigation data={{selected: 2, mobileOpen: mobileOpen, handleDrawerToggle: handleDrawerToggle}}/>
+        <div>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
                     <TextField

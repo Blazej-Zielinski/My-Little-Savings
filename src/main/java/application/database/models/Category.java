@@ -25,8 +25,8 @@ public class Category {
     public Category() {
     }
 
-    public Category(CategoryInfoDto categoryDto) {
-        userId = 1L;
+    public Category(CategoryInfoDto categoryDto, long userId) {
+        this.userId = userId;
         categoryType = new CategoryType(
                 categoryDto.getId(),
                 categoryDto.getTypeName(),

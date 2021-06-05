@@ -75,19 +75,3 @@ const Header = (props) => {
 }
 
 export default Header;
-// <AppBar position="fixed" className={classes.appBar}>
-//     <Toolbar>
-//         <IconButton
-//             color="inherit"
-//             aria-label="open drawer"
-//             edge="start"
-//             onClick={handleDrawerToggle}
-//             className={classes.menuButton}
-//         >
-//             <FontAwesomeIcon icon={faBars}/>
-//         </IconButton>
-//         <Typography variant="h6" noWrap>
-//             Responsive drawer
-//         </Typography>
-//     </Toolbar>
-// </AppBar>

@@ -25,6 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/budgets/*").hasRole("PREMIUM")
                 .and()
                 .addFilter(new JwtFilter(authenticationManager(),secret));
+
+        http.cors();
     }
 
     @Override

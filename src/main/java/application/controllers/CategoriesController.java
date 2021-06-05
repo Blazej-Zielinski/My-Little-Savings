@@ -1,8 +1,11 @@
 package application.controllers;
 
 import application.database.dao.CategoryDao;
+import application.database.dao.CategoryTypesDao;
 import application.database.models.Category;
+import application.database.models.CategoryType;
 import application.dto.CategoryInfoDto;
+import application.dto.CategoryTypesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,9 @@ public class CategoriesController {
 
     @Autowired
     private CategoryDao categoryDao;
+
+    @Autowired
+    private CategoryTypesDao categoryTypesDto;
 
     @GetMapping("get")
     public CategoryInfoDto get() {
@@ -44,6 +50,18 @@ public class CategoriesController {
                 category.getDate(),
                 category.getCategoryType().getColor(),
                 category.getCategoryType().getIcon()
+        )).collect(Collectors.toList());
+    }
+
+    @GetMapping("getAllTypes")
+    public List<CategoryTypesDto> getAllTypes() {
+        Iterable<CategoryType> categoryTypes = categoryTypesDto.findAll();
+
+        return StreamSupport.stream(categoryTypes.spliterator(), false).map(type -> new CategoryTypesDto(
+                type.getId(),
+                type.getName(),
+                type.getIcon(),
+                type.getColor()
         )).collect(Collectors.toList());
     }
 

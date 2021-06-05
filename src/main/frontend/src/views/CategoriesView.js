@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Category from "../components/Category";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {blue, green, orange, purple, red} from '@material-ui/core/colors';
 import {Link} from 'react-router-dom';
 import {
     Avatar,
@@ -23,7 +22,13 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {authTokenName, getCategoriesURL, postCategory, unauthorizedMessage} from "../assets/properties";
+import {
+    authTokenName,
+    getCategoriesURL,
+    getCategoryTypesURL,
+    postCategory,
+    unauthorizedMessage
+} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -71,44 +76,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const categoriesDummyData = [
-    {
-        id: 1,
-        typeName: "Shopping",
-        color: orange[500],
-        icon: "faShoppingCart"
-    },
-    {
-        id: 2,
-        typeName: "Travel",
-        color: green[500],
-        icon: "faPlane",
-    },
-    {
-        id: 3,
-        typeName: "Entertainment",
-        color: blue[500],
-        icon: "faSmileBeam",
-    },
-    {
-        id: 4,
-        typeName: "Bills",
-        color: purple[500],
-        icon: "faFileInvoiceDollar",
-    },
-    {
-        id: 5,
-        typeName: "Clothes",
-        color: red[500],
-        icon: "faTshirt",
-    },
-]
 
 const CategoriesView = (props) => {
     const classes = useStyles();
     const [date, setDate] = useState('2021-04');
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState([]);
+    const [categoriesTypes, setCategoriesTypes] = useState([]);
     const [categories, setCategories] = useState({
         isLoaded: false,
         data: []
@@ -131,19 +105,29 @@ const CategoriesView = (props) => {
                     message: unauthorizedMessage
                 }));
             });
+
+        axios.get(getCategoryTypesURL, jwtConfig)
+            .then(resp => {
+                console.log(resp.data)
+                setCategoriesTypes(resp.data);
+            })
     }, [])
 
     const handleAddCategory = () => {
-        axios.post(postCategory, {
-            ...selectedCategory,
-            date: date
-        }, jwtConfig)
-            .then(resp => {
-                setCategories((prev) => ({isLoaded: true, data: [...prev.data, resp.data]}));
-            });
+        if (selectedCategory.length !== 0) {
+            axios.post(postCategory, {
+                ...selectedCategory,
+                date: date
+            }, jwtConfig)
+                .then(resp => {
+                    setCategories((prev) => ({isLoaded: true, data: [...prev.data, resp.data]}));
+                });
 
-        setOpen(false);
-        setSelectedCategory([]);
+            setOpen(false);
+            setSelectedCategory([]);
+        } else {
+            alert("No category was selected");
+        }
     }
 
     const handleChange = (event) => {
@@ -203,7 +187,7 @@ const CategoriesView = (props) => {
                             classes={{root: classes.select}}
 
                         >
-                            {categoriesDummyData.map((category, index) => (
+                            {categoriesTypes.map((category, index) => (
                                 <MenuItem key={index} value={category}>
                                     <ListItemAvatar>
                                         <Avatar classes={{root: classes.avatar}}
@@ -212,7 +196,7 @@ const CategoriesView = (props) => {
                                                              style={{color: "#ffffff"}}/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    {category.typeName}
+                                    {category.name}
                                 </MenuItem>
                             ))}
                         </Select>

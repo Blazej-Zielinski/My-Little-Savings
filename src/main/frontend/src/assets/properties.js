@@ -5,6 +5,7 @@ export const getTransactions = apiBaseURL + "transactions/getAll/{id}?id=";
 export const postTransaction = apiBaseURL + "transactions/add/{id}?id=";
 export const registerUserUrl = apiBaseURL + "register"
 export const loginUserUrl = apiBaseURL + "login"
+export const getLoggedUsernameUrl = apiBaseURL + "users/get"
 
 export const authTokenName = "jwtToken";
 

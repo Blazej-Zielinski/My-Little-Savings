@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = (props) => {
-    const handleDrawerToggle = props.handleDrower
+    const {username ,title ,handleDrawerToggle} = props.data
     const classes = useStyles();
 
     return (
@@ -60,11 +60,11 @@ const Header = (props) => {
                     <FontAwesomeIcon icon={faBars}/>
                 </IconButton>
                 <div>
-                    <h1>{props.title}</h1>
+                    <h1>{title}</h1>
                 </div>
                 <div className="InnerDiv">
                     <div className="UserDiv">
-                        <span>Mark</span>
+                        <span>{username}</span>
                         <Avatar src="/Avatar.jpg" sizes="big" classes={{root: classes.avatar}}/>
                     </div>
                     <span>Your wallet: 2547.55zł</span>

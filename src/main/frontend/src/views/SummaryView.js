@@ -1,18 +1,15 @@
 import React, {useState} from "react";
-import Header from "../components/Header";
-import Navigation from "../components/Navigation";
-import {Paper, TextField} from "@material-ui/core";
+import {Divider, Paper, TextField} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {Divider} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faLongArrowAltUp,
+    faGift,
     faLongArrowAltDown,
+    faLongArrowAltUp,
+    faMoneyBillWave,
     faPlane,
     faShoppingCart,
-    faSmileBeam,
-    faMoneyBillWave,
-    faGift
+    faSmileBeam
 } from "@fortawesome/free-solid-svg-icons";
 import Diagram from "../components/Diagram";
 

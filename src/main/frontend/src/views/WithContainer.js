@@ -7,6 +7,8 @@ import CategoriesView from "./CategoriesView";
 import TransactionView from "./TransactionsView";
 import BudgetsView from "./BudgetsView";
 import SummaryView from "./SummaryView";
+import axios from "axios";
+import {getLoggedUsernameUrl, authTokenName} from "../assets/properties";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -26,31 +28,38 @@ const useStyles = makeStyles((theme) => ({
 
 const WithContainer = (props) => {
     const classes = useStyles();
+    const [loggedUsername, setLoggedUsername] = useState("");
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [selectedNavItem, setSelectedNavItem] = useState(0);
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
     const [logged, setLogged] = useState({
         redirect: false,
         message: ""
     });
+    const jwtConfig = {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem(authTokenName)
+        }
+    };
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
-    useEffect(() => {
+    const viewProps = () => {
         switch (props.match.path) {
             case "/categories":
-                setSelectedNavItem(1);
-                break;
+                return {selectedNavItem: 1, headerName: "Transactions"};
             case "/budgets":
-                setSelectedNavItem(2);
-                break;
+               return {selectedNavItem: 2, headerName: "Budgets"};
             case "/summary":
-                setSelectedNavItem(3);
-                break;
+                return {selectedNavItem: 3, headerName: "Summary"};
             default:
-                setSelectedNavItem(1);
+                return {selectedNavItem: 1, headerName: "Transactions"};
         }
-    })
+    }
+
+    useEffect(() => {
+        axios.get(getLoggedUsernameUrl, jwtConfig)
+            .then(resp => setLoggedUsername(resp.data.username))
+    }, [])
 
     return (
         logged.redirect ?
@@ -58,12 +67,16 @@ const WithContainer = (props) => {
             :
             <div className={classes.container}>
                 <Navigation data={{
-                    selected: selectedNavItem,
+                    selected: viewProps().selectedNavItem,
                     mobileOpen: mobileOpen,
                     handleDrawerToggle: handleDrawerToggle,
                     setLogged: setLogged
                 }}/>
-                <Header title="Categories" handleDrower={handleDrawerToggle}/>
+                <Header data={{
+                    title: viewProps().headerName,
+                    handleDrawer: handleDrawerToggle,
+                    username: loggedUsername
+                }}/>
                 <Route
                     exact
                     path="/categories"

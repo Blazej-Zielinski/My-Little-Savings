@@ -60,7 +60,7 @@ const Diagram = (props) => {
             </div>
             <div className={classes.components}>
                 {props.data.components.map((component,key) =>
-                    <div className={classes.comp} id="comp-1">
+                    <div className={classes.comp} id="comp-1" key={key}>
                         <Avatar variant={"rounded"} style={{background: component.color}}>
                             <FontAwesomeIcon icon={component.icon}/>
                         </Avatar>

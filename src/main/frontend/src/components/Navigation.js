@@ -1,11 +1,12 @@
 import React from "react";
-import {Drawer, List, ListItem, ListItemIcon, ListItemText, Divider} from "@material-ui/core";
+import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faWallet, faPiggyBank, faFileAlt, faUser, faTv, faCog, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
+import {faCog, faFileAlt, faPiggyBank, faSignOutAlt, faTv, faUser, faWallet} from "@fortawesome/free-solid-svg-icons";
 import "../css/components/Navigation.css";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Link} from 'react-router-dom';
 import Hidden from "@material-ui/core/Hidden";
+import {authTokenName, loggedOutMessage} from "../assets/properties";
 
 const dataForList = [
     {
@@ -72,13 +73,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navigation = (props) => {
-    const {selected,mobileOpen,handleDrawerToggle} = props.data
+    const {selected, mobileOpen, handleDrawerToggle, setLogged} = props.data
     const classes = useStyles();
 
+    function handleLoggedOut() {
+        localStorage.removeItem(authTokenName);
+        setLogged(() => ({
+            redirect: true,
+            message: loggedOutMessage
+        }));
+    }
 
     const drawerContent = (
         <div>
-            <div className={classes.toolbar} />
             <div className="NavigationTitle">
                 <h1>My Little Savings</h1>
             </div>
@@ -87,7 +94,7 @@ const Navigation = (props) => {
             <List>
                 {dataForList.slice(0, 3).map((item) => (
                     <Link to={item.link} className={classes.link} key={item.text}>
-                        <ListItem button id={selected=== item.index ? "selected" : ""}
+                        <ListItem button id={selected === item.index ? "selected" : ""}
                                   className="NavItem">
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text}/>
@@ -100,7 +107,7 @@ const Navigation = (props) => {
             <List>
                 {dataForList.slice(3, 6).map((item) => (
                     <Link to={item.link} className={classes.link} key={item.text}>
-                        <ListItem button id={selected=== item.index ? "selected" : ""}
+                        <ListItem button id={selected === item.index ? "selected" : ""}
                                   className="NavItem">
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text}/>
@@ -112,7 +119,7 @@ const Navigation = (props) => {
             <List>
                 {dataForList.slice(6, 7).map((item) => (
                     <ListItem button key={item.text} id={selected === item.index ? "selected" : ""}
-                              className="NavItem">
+                              className="NavItem" onClick={handleLoggedOut}>
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.text}/>
                     </ListItem>
@@ -130,8 +137,8 @@ const Navigation = (props) => {
                     open={mobileOpen}
                     onClose={handleDrawerToggle}
                     ModalProps={{
-                    keepMounted: true, // Better open performance on mobile.
-                }}
+                        keepMounted: true, // Better open performance on mobile.
+                    }}
                 >
                     {drawerContent}
                 </Drawer>

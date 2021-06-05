@@ -6,16 +6,10 @@ import {useState} from "react";
 import "../css/components/PasswordField.css";
 
 const PasswordField = (props) => {
-    const [values, setValues] = useState({
-        password: '',
-        showPassword: false,
-    });
-    const handleChange = (prop) => (event) => {
-        setValues({...values, [prop]: event.target.value});
-    };
+    const [show, setShow] = useState(false);
 
     const handleClickShowPassword = () => {
-        setValues({...values, showPassword: !values.showPassword});
+        setShow(prev => !prev);
     };
 
     const handleMouseDownPassword = (event) => {
@@ -26,10 +20,11 @@ const PasswordField = (props) => {
         <FormControl id="PasswordInput" className="PasswordInput" variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">{props.placeholder}</InputLabel>
             <OutlinedInput
-                id="outlined-adornment-password"
-                type={values.showPassword ? 'text' : 'password'}
-                value={values.password}
-                onChange={handleChange('password')}
+                id={props.id}
+                name={props.name}
+                type={show ? 'text' : 'password'}
+                value={props.value}
+                onChange={props.onChange}
                 endAdornment={
                     <InputAdornment position="end">
                         <IconButton
@@ -38,7 +33,7 @@ const PasswordField = (props) => {
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                         >
-                            {values.showPassword ? <FontAwesomeIcon style={{fontSize: "0.9em"}} icon={faEye}/> :
+                            {show ? <FontAwesomeIcon style={{fontSize: "0.9em"}} icon={faEye}/> :
                                 <FontAwesomeIcon style={{fontSize: "0.9em"}} icon={faEyeSlash}/>}
                         </IconButton>
                     </InputAdornment>

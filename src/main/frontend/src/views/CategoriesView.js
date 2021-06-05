@@ -1,44 +1,32 @@
-import React, {useState, useEffect} from "react";
-import Navigation from "../components/Navigation";
-import Header from "../components/Header";
+import React, {useEffect, useState} from "react";
 import Category from "../components/Category";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {green, orange, purple, blue, red} from '@material-ui/core/colors';
+import {blue, green, orange, purple, red} from '@material-ui/core/colors';
 import {Link} from 'react-router-dom';
 import {
-    Paper,
-    TextField,
-    Divider,
+    Avatar,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
-    DialogTitle,
     DialogContent,
     DialogContentText,
+    DialogTitle,
+    Divider,
     List,
+    ListItemAvatar,
+    MenuItem,
+    Paper,
     Select,
-    MenuItem, ListItemAvatar, Avatar
+    TextField
 } from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import {getCategoriesURL, postCategory} from "../assets/properties";
+import {authTokenName, getCategoriesURL, postCategory, unauthorizedMessage} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 
-const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
-    categoriesView: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        minHeight: "100vh",
-        float: "right",
-        backgroundColor: "#EAEFF1",
-        paddingTop: theme.spacing(3),
-        [theme.breakpoints.down('xs')]: {
-            width: `100%`,
-            marginLeft: 0,
-        },
-    },
     cardHeader: {
         display: "flex",
         height: "5em",
@@ -116,35 +104,47 @@ const categoriesDummyData = [
     },
 ]
 
-const CategoriesView = () => {
+const CategoriesView = (props) => {
     const classes = useStyles();
     const [date, setDate] = useState('2021-04');
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState([]);
-    const [mobileOpen, setMobileOpen] = useState(false);
-    const [categories,setCategories] = useState([]);
+    const [categories, setCategories] = useState({
+        isLoaded: false,
+        data: []
+    });
+    const jwtConfig = {
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem(authTokenName)
+        }
+    };
+    const setLogged = props.setLogged;
 
-    useEffect(() =>{
-        axios.get(getCategoriesURL).then(resp => {
-            setCategories(resp.data);
-        });
-    },[])
+    useEffect(() => {
+        axios.get(getCategoriesURL, jwtConfig)
+            .then(resp => {
+                setCategories({isLoaded: true, data: resp.data});
+            })
+            .catch(() => {
+                setLogged(() => ({
+                    redirect: true,
+                    message: unauthorizedMessage
+                }));
+            });
+    }, [])
 
     const handleAddCategory = () => {
-        axios.post(postCategory,{
+        axios.post(postCategory, {
             ...selectedCategory,
             date: date
-        }).then(resp => {
-            setCategories((prev) => [...prev,resp.data]);
-        });
+        }, jwtConfig)
+            .then(resp => {
+                setCategories((prev) => ({isLoaded: true, data: [...prev.data, resp.data]}));
+            });
 
         setOpen(false);
         setSelectedCategory([]);
     }
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     const handleChange = (event) => {
         setSelectedCategory(event.target.value);
@@ -164,9 +164,7 @@ const CategoriesView = () => {
     };
 
     return (
-        <div id="CategoriesViewContainer" className={classes.categoriesView}>
-            <Header title="Categories" handleDrower={handleDrawerToggle}/>
-            <Navigation data={{selected: 1, mobileOpen: mobileOpen, handleDrawerToggle: handleDrawerToggle}}/>
+        <div>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
                     <TextField
@@ -208,8 +206,10 @@ const CategoriesView = () => {
                             {categoriesDummyData.map((category, index) => (
                                 <MenuItem key={index} value={category}>
                                     <ListItemAvatar>
-                                        <Avatar classes={{root: classes.avatar}} style={{background: category.color}}>
-                                            <FontAwesomeIcon icon={iconPicker(category.icon)} style={{color: "#ffffff"}}/>
+                                        <Avatar classes={{root: classes.avatar}}
+                                                style={{background: category.color}}>
+                                            <FontAwesomeIcon icon={iconPicker(category.icon)}
+                                                             style={{color: "#ffffff"}}/>
                                         </Avatar>
                                     </ListItemAvatar>
                                     {category.typeName}
@@ -228,11 +228,22 @@ const CategoriesView = () => {
                 </Dialog>
                 <List classes={{root: classes.list}}>
                     {
-                        categories.map((category) =>
-                            <Link to={"/transactions/" + category.id} className={classes.link} key={category.id}>
-                                <Category data={category} iconImg={iconPicker(category.icon)}/>
-                            </Link>
-                        )
+                        !categories.isLoaded ?
+                            <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                                <CircularProgress size={100} thickness={5}/>
+                            </div>
+                            :
+                            categories.data.length === 0 ?
+                                <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                                    No Data
+                                </div>
+                                :
+                                categories.data.map((category) =>
+                                    <Link to={"/transactions/" + category.id} className={classes.link}
+                                          key={category.id}>
+                                        <Category data={category} iconImg={iconPicker(category.icon)}/>
+                                    </Link>
+                                )
                     }
                 </List>
             </Paper>

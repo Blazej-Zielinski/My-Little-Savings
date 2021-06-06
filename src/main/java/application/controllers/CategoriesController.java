@@ -2,15 +2,19 @@ package application.controllers;
 
 import application.database.dao.CategoryDao;
 import application.database.dao.CategoryTypesDao;
+import application.database.dao.TransactionDao;
 import application.database.models.Category;
+import application.database.models.CategoryDetails;
 import application.database.models.CategoryType;
 import application.dto.CategoryInfoDto;
 import application.dto.CategoryTypesDto;
+import application.dto.PostCategoryDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -23,19 +27,11 @@ public class CategoriesController {
     private CategoryDao categoryDao;
 
     @Autowired
+    private TransactionDao transactionDao;
+
+    @Autowired
     private CategoryTypesDao categoryTypesDto;
 
-    @GetMapping("get")
-    public CategoryInfoDto get() {
-        Category category = categoryDao.getOne(1L);
-        return new CategoryInfoDto(
-                category.getId(),
-                category.getCategoryType().getName(),
-                category.getDate(),
-                category.getCategoryType().getColor(),
-                category.getCategoryType().getIcon()
-        );
-    }
 
     @GetMapping("getAll")
     public List<CategoryInfoDto> getAll() {
@@ -43,14 +39,20 @@ public class CategoriesController {
         long userId = Long.parseLong(authentication.getName());
 
         Iterable<Category> categories = categoryDao.findAll(userId);
+        List<CategoryDetails> categoriesDetails = transactionDao.getCategoriesDetails();
 
-        return StreamSupport.stream(categories.spliterator(), false).map(category -> new CategoryInfoDto(
-                category.getId(),
-                category.getCategoryType().getName(),
-                category.getDate(),
-                category.getCategoryType().getColor(),
-                category.getCategoryType().getIcon()
-        )).collect(Collectors.toList());
+        return StreamSupport.stream(categories.spliterator(), false).map(category -> {
+                    Optional<CategoryDetails> catDetails = categoriesDetails.stream()
+                            .filter(catD -> catD.getId() == category.getId())
+                            .findFirst();
+
+                    return catDetails.map(categoryDetails -> new CategoryInfoDto(
+                            category,
+                            categoryDetails.getRecordsNumber(),
+                            categoryDetails.getTransactionsValue()))
+                            .orElseGet(() -> new CategoryInfoDto(category, 0L, 0D));
+                }
+        ).collect(Collectors.toList());
     }
 
     @GetMapping("getAllTypes")
@@ -66,18 +68,16 @@ public class CategoriesController {
     }
 
     @PostMapping("add")
-    public CategoryInfoDto add(@RequestBody CategoryInfoDto categoryDto) {
+    public CategoryInfoDto add(@RequestBody PostCategoryDetails categoryDetails) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         long userId = Long.parseLong(authentication.getName());
 
-        Category category = new Category(categoryDto, userId);
+        Category category = new Category(categoryDetails, userId);
         category = categoryDao.save(category);
         return new CategoryInfoDto(
-                category.getId(),
-                category.getCategoryType().getName(),
-                category.getDate(),
-                category.getCategoryType().getColor(),
-                category.getCategoryType().getIcon()
+                category,
+                0L,
+                0D
         );
     }
 

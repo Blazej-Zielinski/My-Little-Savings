@@ -1,18 +1,24 @@
 package application.dto;
 
-public class CategoryInfoDto {
-    private Long id;
-    private String typeName;
-    private String date;
-    private String color;
-    private String icon;
+import application.database.models.Category;
 
-    public CategoryInfoDto(Long id, String typeName, String date, String color, String icon) {
-        this.id = id;
-        this.typeName = typeName;
-        this.date = date;
-        this.color = color;
-        this.icon = icon;
+public class CategoryInfoDto {
+    private final Long id;
+    private final String typeName;
+    private final String date;
+    private final String color;
+    private final String icon;
+    private final long recordsNumber;
+    private final double transactionsValue;
+
+    public CategoryInfoDto(Category category, long recordsNumber, double transactionsValue){
+        this.id = category.getId();
+        this.typeName = category.getCategoryType().getName();
+        this.date = category.getDate();
+        this.color = category.getCategoryType().getColor();
+        this.icon = category.getCategoryType().getIcon();
+        this.recordsNumber = recordsNumber;
+        this.transactionsValue = transactionsValue;
     }
 
     public Long getId() {
@@ -23,27 +29,23 @@ public class CategoryInfoDto {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getColor() {
         return color;
     }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
-
     public String getIcon() {
         return icon;
+    }
+
+    public long getRecordsNumber() {
+        return recordsNumber;
+    }
+
+    public double getTransactionsValue() {
+        return transactionsValue;
     }
 }

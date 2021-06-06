@@ -97,7 +97,11 @@ const CategoriesView = (props) => {
     useEffect(() => {
         axios.get(getCategoriesURL, jwtConfig)
             .then(resp => {
-                setCategories({isLoaded: true, data: resp.data});
+                setCategories({
+                    isLoaded: true,
+                    data: resp.data.map(el => ({...el, transactionsValue: el.transactionsValue.toFixed(2)}))
+                });
+                console.log(resp.data)
             })
             .catch(() => {
                 setLogged(() => ({
@@ -108,19 +112,25 @@ const CategoriesView = (props) => {
 
         axios.get(getCategoryTypesURL, jwtConfig)
             .then(resp => {
-                console.log(resp.data)
                 setCategoriesTypes(resp.data);
             })
     }, [])
 
     const handleAddCategory = () => {
         if (selectedCategory.length !== 0) {
+            console.log(selectedCategory)
             axios.post(postCategory, {
                 ...selectedCategory,
                 date: date
             }, jwtConfig)
                 .then(resp => {
-                    setCategories((prev) => ({isLoaded: true, data: [...prev.data, resp.data]}));
+                    console.log(resp.data)
+                    setCategories((prev) => ({
+                        isLoaded: true,
+                        data: [
+                            ...prev.data,
+                            {...resp.data, transactionsValue: resp.data.transactionsValue.toFixed(2)}
+                        ]}));
                 });
 
             setOpen(false);

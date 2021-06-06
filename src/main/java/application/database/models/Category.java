@@ -1,6 +1,7 @@
 package application.database.models;
 
 import application.dto.CategoryInfoDto;
+import application.dto.PostCategoryDetails;
 
 import javax.persistence.*;
 
@@ -34,6 +35,17 @@ public class Category {
                 categoryDto.getColor()
         );
         date = categoryDto.getDate();
+    }
+
+    public Category(PostCategoryDetails categoryDetails, long userId) {
+        this.userId = userId;
+        categoryType = new CategoryType(
+                categoryDetails.getId(),
+                categoryDetails.getName(),
+                categoryDetails.getIcon(),
+                categoryDetails.getColor()
+        );
+        date = categoryDetails.getDate();
     }
 
     public Long getId() {

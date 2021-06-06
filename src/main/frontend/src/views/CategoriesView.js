@@ -185,20 +185,21 @@ const CategoriesView = (props) => {
                             onChange={handleChange}
                             style={{width: "100%"}}
                             classes={{root: classes.select}}
-
                         >
-                            {categoriesTypes.map((category, index) => (
-                                <MenuItem key={index} value={category}>
-                                    <ListItemAvatar>
-                                        <Avatar classes={{root: classes.avatar}}
-                                                style={{background: category.color}}>
-                                            <FontAwesomeIcon icon={iconPicker(category.icon)}
-                                                             style={{color: "#ffffff"}}/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    {category.name}
-                                </MenuItem>
-                            ))}
+                            {
+                                categoriesTypes.map((category, index) => (
+                                    <MenuItem key={index} value={category}>
+                                        <ListItemAvatar>
+                                            <Avatar classes={{root: classes.avatar}}
+                                                    style={{background: category.color}}>
+                                                <FontAwesomeIcon icon={iconPicker(category.icon)}
+                                                                 style={{color: "#ffffff"}}/>
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        {category.name}
+                                    </MenuItem>
+                                ))
+                            }
                         </Select>
                     </DialogContent>
                     <DialogActions>
@@ -223,7 +224,8 @@ const CategoriesView = (props) => {
                                 </div>
                                 :
                                 categories.data.map((category) =>
-                                    <Link to={"/transactions/" + category.id} className={classes.link}
+                                    <Link to={"/transactions/" + category.id}
+                                          className={classes.link}
                                           key={category.id}>
                                         <Category data={category} iconImg={iconPicker(category.icon)}/>
                                     </Link>

@@ -31,7 +31,7 @@ public class Transaction {
         this.categoryId = categoryId;
         this.name = transactionInfoDto.getName();
         this.value = transactionInfoDto.getValue();
-        this.date = transactionInfoDto.getDate();
+        this.date = transactionInfoDto.getDay();
     }
 
     public Long getId() {

@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import Header from "../components/Header";
-import Navigation from "../components/Navigation";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
     Avatar,
-    Button, CircularProgress,
+    Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -18,10 +17,11 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus,} from "@fortawesome/free-solid-svg-icons";
 import Transaction from "../components/Transaction";
-import {Link, Redirect, useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import axios from "axios";
 import {getTransactions, postTransaction, unauthorizedMessage} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
+import date from 'date-and-time';
 
 const useStyles = makeStyles((theme) => ({
     cardHeader: {
@@ -69,41 +69,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const transactions = [
-    {
-        title: "Boots",
-        day: "01",
-        date: "Saturday, November 2021",
-        key: 1
-    },
-    {
-        title: "Jeans",
-        day: "12",
-        date: "Saturday, November 2021",
-        key: 2
-    },
-    {
-        title: "Jacket",
-        day: "13",
-        date: "Saturday, November 2021",
-        key: 3
-    },
-    {
-        title: "T-shirt",
-        day: "22",
-        date: "Saturday, November 2021",
-        key: 4
-    },
-    {
-        title: "Hat",
-        day: "30",
-        date: "Saturday, November 2021",
-        key: 5
-    },
-]
 
 function comparator(a, b) {
-    return (a.date > b.date) ? 1 : (a.date === b.date) ? ((a.date > b.date) ? 1 : -1) : -1
+    return (a.day > b.day) ? 1 : (a.day === b.day) ? ((a.day > b.day) ? 1 : -1) : -1
 }
 
 const TransactionView = (props) => {
@@ -118,7 +86,7 @@ const TransactionView = (props) => {
     const [transaction, setTransaction] = useState({
         name: "",
         value: "",
-        date: ""
+        day: ""
     });
     const jwtConfig = {
         headers: {
@@ -130,7 +98,18 @@ const TransactionView = (props) => {
     useEffect(() => {
         axios.get(getTransactions + id, jwtConfig)
             .then(resp => {
-                const {transactions, ...categoryInfo} = resp.data;
+                let {transactions, ...categoryInfo} = resp.data;
+                let [year, month] = categoryInfo.date.split("-");
+
+                transactions = transactions.map(t => {
+                    const dataObject = new Date(year, month - 1, t.day);
+                    return {
+                        ...t,
+                        date: date.format(dataObject, 'dddd, MMMM YYYY'),
+                        value: t.value.toFixed(2)
+                    }
+                })
+
                 setCategory(categoryInfo);
                 setTransactionsList({isLoaded: true, data: transactions.sort(comparator)});
             })
@@ -143,17 +122,33 @@ const TransactionView = (props) => {
     }, [])
 
     const handleAddTransaction = () => {
-        axios.post(postTransaction + id, transaction, jwtConfig)
-            .then(resp => {
-                setTransactionsList(prev => ({isLoaded: true, data: [...prev.data, resp.data].sort(comparator)}));
-            });
+        const {name, value, day} = transaction;
+        if (name !== "" && value !== "" && day !== "") {
+            axios.post(postTransaction + id, transaction, jwtConfig)
+                .then(resp => {
+                    let [year, month] = category.date.split("-");
+                    setTransactionsList(prev => {
+                        const dataObject = new Date(year, month - 1, resp.data.day);
+                        const newTransaction = {...resp.data,
+                            date: date.format(dataObject, 'dddd, MMMM YYYY'),
+                            value: resp.data.value.toFixed(2)
+                        }
+                        return {
+                            isLoaded: true,
+                            data: [...prev.data, newTransaction].sort(comparator)
+                        }
+                    });
+                });
 
-        setOpen(false);
-        setTransaction({
-            name: "",
-            value: "",
-            date: ""
-        });
+            setOpen(false);
+            setTransaction({
+                name: "",
+                value: "",
+                day: ""
+            });
+        } else {
+            alert("Fill all inputs")
+        }
     }
 
     const handleClickOpen = () => {
@@ -165,9 +160,8 @@ const TransactionView = (props) => {
         setTransaction({
             name: "",
             value: "",
-            date: ""
+            day: ""
         });
-        console.log(transactionsList.data)
     };
 
     const handleChangeName = (e) => {
@@ -180,11 +174,11 @@ const TransactionView = (props) => {
                 tempTransaction.value = e.target.value;
                 break;
             case "TransactionDay":
-                tempTransaction.date = e.target.value;
-                if (tempTransaction.date > 31)
-                    tempTransaction.date = 31;
-                else if (tempTransaction.date < 0)
-                    tempTransaction.date = 0;
+                tempTransaction.day = e.target.value;
+                if (tempTransaction.day > 31)
+                    tempTransaction.day = 31;
+                else if (tempTransaction.day < 1)
+                    tempTransaction.day = "";
                 break;
         }
         setTransaction(tempTransaction);
@@ -227,7 +221,7 @@ const TransactionView = (props) => {
                             <TextField id="TransactionDay" className="TextInput" label="Day of month"
                                        variant="outlined"
                                        classes={{root: classes.dialogInputs}} onChange={handleChangeName}
-                                       value={transaction.date} type="number"/>
+                                       value={transaction.day} type="number"/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">

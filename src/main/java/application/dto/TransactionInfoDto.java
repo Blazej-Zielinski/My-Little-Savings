@@ -3,12 +3,12 @@ package application.dto;
 public class TransactionInfoDto {
     private String name;
     private double value;
-    private String date;
+    private String day;
 
-    public TransactionInfoDto(String name, double value, String date) {
+    public TransactionInfoDto(String name, double value, String day) {
         this.name = name;
         this.value = value;
-        this.date = date;
+        this.day = day;
     }
 
     public String getName() {
@@ -27,11 +27,11 @@ public class TransactionInfoDto {
         this.value = value;
     }
 
-    public String getDate() {
-        return date;
+    public String getDay() {
+        return day;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDay(String day) {
+        this.day = day;
     }
 }

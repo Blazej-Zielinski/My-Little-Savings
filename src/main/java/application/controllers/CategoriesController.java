@@ -81,8 +81,9 @@ public class CategoriesController {
         );
     }
 
-    @DeleteMapping("delete")
-    public String delete() {
-        return "Category has been removed";
+    @DeleteMapping("delete/{id}")
+    public Boolean delete(@RequestParam("id") Long categoryId) {
+        categoryDao.deleteById(categoryId);
+        return true;
     }
 }

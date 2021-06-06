@@ -23,7 +23,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import {
-    authTokenName,
+    authTokenName, confirmDeleteMessage, deleteCategoryURL,
     getCategoriesURL,
     getCategoryTypesURL,
     postCategory,
@@ -101,7 +101,6 @@ const CategoriesView = (props) => {
                     isLoaded: true,
                     data: resp.data.map(el => ({...el, transactionsValue: el.transactionsValue.toFixed(2)}))
                 });
-                console.log(resp.data)
             })
             .catch(() => {
                 setLogged(() => ({
@@ -118,7 +117,6 @@ const CategoriesView = (props) => {
 
     const handleAddCategory = () => {
         if (selectedCategory.length !== 0) {
-            console.log(selectedCategory)
             axios.post(postCategory, {
                 ...selectedCategory,
                 date: date
@@ -139,6 +137,20 @@ const CategoriesView = (props) => {
             alert("No category was selected");
         }
     }
+
+    function handleDeleteCategory(categoryId) {
+        if (window.confirm(confirmDeleteMessage)) {
+            axios.delete(deleteCategoryURL + categoryId, jwtConfig)
+                .then(() => {
+                    setCategories(prev => ({
+                        ...prev,
+                        data: prev.data.filter(category => category.id !== categoryId)
+                    }))
+                })
+        }
+
+    }
+
 
     const handleChange = (event) => {
         setSelectedCategory(event.target.value);
@@ -237,7 +249,10 @@ const CategoriesView = (props) => {
                                     <Link to={"/transactions/" + category.id}
                                           className={classes.link}
                                           key={category.id}>
-                                        <Category data={category} iconImg={iconPicker(category.icon)}/>
+                                        <Category
+                                            data={category}
+                                            handleDeleteCategory={handleDeleteCategory}
+                                            iconImg={iconPicker(category.icon)}/>
                                     </Link>
                                 )
                     }

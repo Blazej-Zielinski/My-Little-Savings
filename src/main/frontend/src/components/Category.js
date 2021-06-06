@@ -49,7 +49,10 @@ const Category = (props) => {
                     :
                     <ListItemText primary={props.data.transactionsValue + "zł"} classes={{primary: classes.categoryCostNegative}}/>
             }
-            <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={() => {props.handleDeleteTransaction(props.data.id)}}>
+            <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={(e) => {
+                e.preventDefault();
+                props.handleDeleteCategory(props.data.id)
+            }}>
                 <Delete/>
             </IconButton>
         </ListItem>

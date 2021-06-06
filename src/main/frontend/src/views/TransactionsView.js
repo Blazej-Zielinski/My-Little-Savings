@@ -19,7 +19,13 @@ import {faPlus,} from "@fortawesome/free-solid-svg-icons";
 import Transaction from "../components/Transaction";
 import {Link, useParams} from 'react-router-dom';
 import axios from "axios";
-import {getTransactions, postTransaction, unauthorizedMessage} from "../assets/properties";
+import {
+    confirmDeleteMessage,
+    deleteTransactionURL,
+    getTransactions,
+    postTransaction,
+    unauthorizedMessage
+} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 import date from 'date-and-time';
 
@@ -106,7 +112,8 @@ const TransactionView = (props) => {
                     return {
                         ...t,
                         date: date.format(dataObject, 'dddd, MMMM YYYY'),
-                        value: t.value.toFixed(2)
+                        value: t.value.toFixed(2),
+                        day: parseInt(t.day).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})
                     }
                 })
 
@@ -129,9 +136,14 @@ const TransactionView = (props) => {
                     let [year, month] = category.date.split("-");
                     setTransactionsList(prev => {
                         const dataObject = new Date(year, month - 1, resp.data.day);
-                        const newTransaction = {...resp.data,
+                        const newTransaction = {
+                            ...resp.data,
                             date: date.format(dataObject, 'dddd, MMMM YYYY'),
-                            value: resp.data.value.toFixed(2)
+                            value: resp.data.value.toFixed(2),
+                            day: parseInt(resp.data.day).toLocaleString('en-US', {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false
+                            })
                         }
                         return {
                             isLoaded: true,
@@ -148,6 +160,15 @@ const TransactionView = (props) => {
             });
         } else {
             alert("Fill all inputs")
+        }
+    }
+
+    function handleDeleteTransaction(id) {
+        if (window.confirm(confirmDeleteMessage)) {
+            axios.delete(deleteTransactionURL + id, jwtConfig)
+                .then(() => {
+                    setTransactionsList(prev => ({...prev, data: prev.data.filter(t => t.id !== id)}))
+                })
         }
     }
 
@@ -246,8 +267,11 @@ const TransactionView = (props) => {
                                     No Data
                                 </div>
                                 :
-                                transactionsList.data.map((transaction, index) => <Transaction key={index}
-                                                                                               data={transaction}/>)
+                                transactionsList.data.map((transaction, index) =>
+                                    <Transaction key={index}
+                                                 data={transaction}
+                                                 handleDeleteTransaction={handleDeleteTransaction}
+                                    />)
                     }
                 </List>
             </Paper>

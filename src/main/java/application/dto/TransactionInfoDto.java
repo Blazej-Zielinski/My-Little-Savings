@@ -1,37 +1,31 @@
 package application.dto;
 
 public class TransactionInfoDto {
-    private String name;
-    private double value;
-    private String day;
+    private final long id;
+    private final String name;
+    private final double value;
+    private final String day;
 
-    public TransactionInfoDto(String name, double value, String day) {
+    public TransactionInfoDto(long id, String name, double value, String day) {
+        this.id = id;
         this.name = name;
         this.value = value;
         this.day = day;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public double getValue() {
         return value;
     }
 
-    public void setValue(double value) {
-        this.value = value;
-    }
-
     public String getDay() {
         return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
     }
 }

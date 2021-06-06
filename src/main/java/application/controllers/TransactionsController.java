@@ -24,9 +24,10 @@ public class TransactionsController {
     private CategoryDao categoryDao;
 
     @GetMapping("get")
-    public TransactionInfoDto get(){
+    public TransactionInfoDto get() {
         Transaction transaction = transactionDao.getOne(1L);
         return new TransactionInfoDto(
+                transaction.getId(),
                 transaction.getName(),
                 transaction.getValue(),
                 transaction.getDate()
@@ -34,7 +35,7 @@ public class TransactionsController {
     }
 
     @GetMapping("getAll/{id}")
-    public TransactionsAndCategoryDto getAll(@RequestParam("id") Long categoryId){
+    public TransactionsAndCategoryDto getAll(@RequestParam("id") Long categoryId) {
         Collection<Transaction> transactions = transactionDao.findAll(categoryId);
         Category category = categoryDao.getOne(categoryId);
 
@@ -44,24 +45,26 @@ public class TransactionsController {
                 category.getCategoryType().getColor(),
                 category.getCategoryType().getIcon(),
                 transactions.stream()
-                .map(transaction -> new TransactionInfoDto(
-                        transaction.getName(),
-                        transaction.getValue(),
-                        transaction.getDate()
-                ))
-                .collect(Collectors.toList())
+                        .map(transaction -> new TransactionInfoDto(
+                                transaction.getId(),
+                                transaction.getName(),
+                                transaction.getValue(),
+                                transaction.getDate()
+                        ))
+                        .collect(Collectors.toList())
         );
     }
 
     @PostMapping("add/{id}")
-    public TransactionInfoDto add(@RequestParam("id") Long categoryId,@RequestBody TransactionInfoDto transactionInfoDto){
-        Transaction transaction = new Transaction(transactionInfoDto ,categoryId);
+    public TransactionInfoDto add(@RequestParam("id") Long categoryId, @RequestBody TransactionInfoDto transactionInfoDto) {
+        Transaction transaction = new Transaction(transactionInfoDto, categoryId);
         transactionDao.save(transaction);
         return transactionInfoDto;
     }
 
-    @DeleteMapping("delete")
-    public String delete(){
-        return "Transaction has been removed";
+    @DeleteMapping("delete/{id}")
+    public Boolean delete(@RequestParam("id") Long transactionId) {
+        transactionDao.deleteById(transactionId);
+        return true;
     }
 }

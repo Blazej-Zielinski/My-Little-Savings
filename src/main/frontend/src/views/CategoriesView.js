@@ -23,12 +23,15 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import {
-    authTokenName, confirmDeleteMessage, deleteCategoryURL,
+    authTokenName,
+    confirmDeleteMessage,
+    deleteCategoryURL,
     getCategoriesURL,
     getCategoryTypesURL,
     postCategory,
     unauthorizedMessage
 } from "../assets/properties";
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 import iconPicker from "../assets/iconPicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -241,7 +244,8 @@ const CategoriesView = (props) => {
                             </div>
                             :
                             categories.data.length === 0 ?
-                                <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                                <div style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                    <SentimentDissatisfiedIcon style={{fontSize: 100}}/>
                                     No Data
                                 </div>
                                 :

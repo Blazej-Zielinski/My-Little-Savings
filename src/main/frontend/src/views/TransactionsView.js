@@ -28,6 +28,7 @@ import {
 } from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 import date from 'date-and-time';
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 
 const useStyles = makeStyles((theme) => ({
     cardHeader: {
@@ -267,8 +268,9 @@ const TransactionView = (props) => {
                             </div>
                             :
                             transactionsList.data.length === 0 ?
-                                <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
-                                    No Data
+                                <div style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                    <SentimentDissatisfiedIcon style={{fontSize: 100}}/>
+                                    <div>No Data</div>
                                 </div>
                                 :
                                 transactionsList.data.map((transaction, index) =>

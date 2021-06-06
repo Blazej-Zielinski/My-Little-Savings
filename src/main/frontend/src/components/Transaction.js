@@ -18,7 +18,13 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "2.5em",
         fontWeight: 600
     },
-    categoryCost: {
+    categoryCostPositive: {
+        textAlign: "right",
+        fontSize: "1.3em",
+        color: "#039BE5",
+        fontWeight: "bold"
+    },
+    categoryCostNegative: {
         textAlign: "right",
         fontSize: "1.3em",
         color: "#FB0A43",
@@ -37,14 +43,15 @@ const Transaction = (props) => {
                 {props.data.day}
             </ListItemAvatar>
             <ListItemText primary={props.data.name} secondary={props.data.date} classes={{primary: classes.titleText}}/>
-            <ListItemText primary={"-" + props.data.value + "zł"} classes={{primary: classes.categoryCost}}/>
+            {
+                props.data.value >= 0 ?
+                    <ListItemText primary={"+" + props.data.value + "zł"} classes={{primary: classes.categoryCostPositive}}/>
+                    :
+                    <ListItemText primary={props.data.value + "zł"} classes={{primary: classes.categoryCostNegative}}/>
+            }
             <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={() => {props.handleDeleteTransaction(props.data.id)}}>
                 <Delete/>
             </IconButton>
-
-            {/*<Button variant="contained" color="secondary" startIcon={<Delete />} style={{marginLeft: 20}}>*/}
-            {/*    Delete*/}
-            {/*</Button>*/}
         </ListItem>
     )
 }

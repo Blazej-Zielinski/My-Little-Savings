@@ -205,6 +205,10 @@ const TransactionView = (props) => {
         setTransaction(tempTransaction);
     }
 
+    const validateValue = (e) => {
+        setTransaction(prev => ({...prev, value: parseFloat(e.target.value).toFixed(2)}))
+    }
+
 
     return (
         <div>
@@ -237,7 +241,7 @@ const TransactionView = (props) => {
                                        classes={{root: classes.dialogInputs}} onChange={handleChangeName}
                                        value={transaction.name} type="text"/>
                             <TextField id="TransactionValue" className="TextInput" label="Value" variant="outlined"
-                                       classes={{root: classes.dialogInputs}} onChange={handleChangeName}
+                                       classes={{root: classes.dialogInputs}} onChange={handleChangeName} onBlur={validateValue}
                                        value={transaction.value} type="number"/>
                             <TextField id="TransactionDay" className="TextInput" label="Day of month"
                                        variant="outlined"

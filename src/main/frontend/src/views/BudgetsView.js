@@ -19,7 +19,13 @@ import {faPlane, faPlus, faShoppingCart, faSmileBeam,} from "@fortawesome/free-s
 import {blue, green, orange} from "@material-ui/core/colors";
 import Budget from "../components/Budget";
 import axios from "axios";
-import {getBudgetsURL, getCategoryTypesURL, postBudgetURL, unauthorizedMessage} from "../assets/properties";
+import {
+    confirmDeleteMessage, deleteBudgetURL,
+    getBudgetsURL,
+    getCategoryTypesURL,
+    postBudgetURL,
+    unauthorizedMessage
+} from "../assets/properties";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import iconPicker from "../assets/iconPicker";
 
@@ -173,6 +179,15 @@ const BudgetsView = (props) => {
         }
     }
 
+    function handleDeleteBudget(id) {
+        if (window.confirm(confirmDeleteMessage)) {
+            axios.delete(deleteBudgetURL + id, jwtConfig)
+                .then(() => {
+                    setBudgetsList(prev => ({...prev, data: prev.data.filter(b => b.id !== id)}))
+                })
+        }
+    }
+
     const handleClose = () => {
         setOpen(false);
         setSelectedBudget([])
@@ -281,7 +296,7 @@ const BudgetsView = (props) => {
                                     <Budget
                                         key={index}
                                         data={budget}
-                                        // handleDeleteTransaction={handleDeleteTransaction}
+                                        handleDeleteBudget={handleDeleteBudget}
                                     />)
                     }
                 </List>

@@ -4,6 +4,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import iconPicker from "../assets/iconPicker";
+import IconButton from "@material-ui/core/IconButton";
+import {Delete} from "@material-ui/icons";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +65,9 @@ const Budget = (props) => {
             </div>
             <ListItemText primary={`${props.data.value} zł`} secondary={"Left 400.00 zł"}
                           classes={{root: classes.budgetValueAlign, primary: classes.budgetValue}}/>
+            <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={() => {props.handleDeleteBudget(props.data.id)}}>
+                <Delete/>
+            </IconButton>
         </ListItem>
     )
 }

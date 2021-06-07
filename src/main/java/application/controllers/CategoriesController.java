@@ -33,12 +33,12 @@ public class CategoriesController {
     private CategoryTypesDao categoryTypesDto;
 
 
-    @GetMapping("getAll")
-    public List<CategoryInfoDto> getAll() {
+    @GetMapping("getAll/{date}")
+    public List<CategoryInfoDto> getAll(@RequestParam("date") String date) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         long userId = Long.parseLong(authentication.getName());
 
-        Iterable<Category> categories = categoryDao.findAll(userId);
+        Iterable<Category> categories = categoryDao.findAll(userId, date);
         List<CategoryDetails> categoriesDetails = transactionDao.getCategoriesDetails();
 
         return StreamSupport.stream(categories.spliterator(), false).map(category -> {

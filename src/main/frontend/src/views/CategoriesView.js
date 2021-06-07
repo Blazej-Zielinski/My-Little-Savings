@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Category from "../components/Category";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Link} from 'react-router-dom';
@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CategoriesView = (props) => {
     const classes = useStyles();
-    const [date, setDate] = useState('2021-04');
+    const hasMounted = useRef(false);
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [categoriesTypes, setCategoriesTypes] = useState([]);
@@ -96,9 +96,17 @@ const CategoriesView = (props) => {
         }
     };
     const setLogged = props.setLogged;
+    const [date, setDate] = useState(() => {
+        if(props.location.initialDate){
+            return props.location.initialDate;
+        }
+        const now = new Date();
+        const month = (now.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2})
+        return now.getFullYear() + "-" + month;
+    });
 
     useEffect(() => {
-        axios.get(getCategoriesURL, jwtConfig)
+        axios.get(getCategoriesURL + date, jwtConfig)
             .then(resp => {
                 setCategories({
                     isLoaded: true,
@@ -118,6 +126,32 @@ const CategoriesView = (props) => {
             })
     }, [])
 
+    useEffect(() => {
+        if(!hasMounted.current){
+            hasMounted.current = true
+        }
+        else {
+            setCategories({
+                isLoaded: false,
+                data: []
+            })
+
+            axios.get(getCategoriesURL + date,jwtConfig)
+                .then(resp => {
+                    setCategories({
+                        isLoaded: true,
+                        data: resp.data.map(el => ({...el, transactionsValue: el.transactionsValue.toFixed(2)}))
+                    });
+                })
+                .catch(() => {
+                    setLogged(() => ({
+                        redirect: true,
+                        message: unauthorizedMessage
+                    }));
+                });
+        }
+    },[date])
+
     const handleAddCategory = () => {
         if (selectedCategory.length !== 0) {
             axios.post(postCategory, {
@@ -131,7 +165,8 @@ const CategoriesView = (props) => {
                         data: [
                             ...prev.data,
                             {...resp.data, transactionsValue: resp.data.transactionsValue.toFixed(2)}
-                        ]}));
+                        ]
+                    }));
                 });
 
             setOpen(false);
@@ -154,22 +189,9 @@ const CategoriesView = (props) => {
 
     }
 
-
-    const handleChange = (event) => {
-        setSelectedCategory(event.target.value);
-    };
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
     const handleClose = () => {
         setOpen(false);
         setSelectedCategory([]);
-    };
-
-    const handleDateChange = (date) => {
-        setDate(date.value);
     };
 
     return (
@@ -180,7 +202,9 @@ const CategoriesView = (props) => {
                         id="date"
                         type="month"
                         value={date}
-                        onChange={handleDateChange}
+                        onChange={event => {
+                            setDate(event.target.value)
+                        }}
                         className={classes.textField}
                         InputLabelProps={{
                             shrink: true,
@@ -191,7 +215,9 @@ const CategoriesView = (props) => {
                         classes={{root: classes.addButton}}
                         color="primary"
                         startIcon={<FontAwesomeIcon icon={faPlus}/>}
-                        onClick={handleClickOpen}
+                        onClick={() => {
+                            setOpen(true)
+                        }}
                     >
                         Add Category
                     </Button>
@@ -207,7 +233,9 @@ const CategoriesView = (props) => {
                             labelId="select"
                             id="categorySelect"
                             value={selectedCategory}
-                            onChange={handleChange}
+                            onChange={event => {
+                                setSelectedCategory(event.target.value)
+                            }}
                             style={{width: "100%"}}
                             classes={{root: classes.select}}
                         >
@@ -244,7 +272,12 @@ const CategoriesView = (props) => {
                             </div>
                             :
                             categories.data.length === 0 ?
-                                <div style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+                                <div style={{
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center"
+                                }}>
                                     <SentimentDissatisfiedIcon style={{fontSize: 100}}/>
                                     No Data
                                 </div>

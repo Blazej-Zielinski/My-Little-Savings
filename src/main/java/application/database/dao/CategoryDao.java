@@ -11,6 +11,6 @@ import java.util.Collection;
 @Repository
 public interface CategoryDao extends JpaRepository<Category,Long> {
 
-    @Query("select t from Category t where t.userId = :userId")
-    Collection<Category> findAll(Long userId);
+    @Query("select t from Category t where t.userId = :userId and t.date = :date")
+    Collection<Category> findAll(Long userId, String date);
 }

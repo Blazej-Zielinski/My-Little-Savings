@@ -143,7 +143,6 @@ const TransactionView = (props) => {
                             value: resp.data.value.toFixed(2),
                             day: parseInt(resp.data.day).toLocaleString('en-US', {
                                 minimumIntegerDigits: 2,
-                                useGrouping: false
                             })
                         }
                         return {
@@ -215,7 +214,7 @@ const TransactionView = (props) => {
         <div>
             <Paper elevation={5} classes={{root: classes.card}}>
                 <div className={classes.cardHeader}>
-                    <Link to="/categories" className={classes.link}>
+                    <Link to={{pathname: "/categories", initialDate: category.date}} className={classes.link}>
                         <div className={classes.headerTitle}>
                             <Avatar classes={{root: classes.avatarHeader}} style={{background: category.color}}>
                                 <FontAwesomeIcon icon={iconPicker(category.icon)} style={{color: "#ffffff"}}/>

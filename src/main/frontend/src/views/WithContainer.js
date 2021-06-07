@@ -74,7 +74,7 @@ const WithContainer = (props) => {
                 }}/>
                 <Header data={{
                     title: viewProps().headerName,
-                    handleDrawer: handleDrawerToggle,
+                    handleDrawerToggle: handleDrawerToggle,
                     username: loggedUsername
                 }}/>
                 <Route

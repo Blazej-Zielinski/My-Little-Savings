@@ -1,5 +1,7 @@
 package application.database.models;
 
+import application.dto.PostBudgetDetails;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,9 @@ public class Budget {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     @ManyToOne
     @JoinColumn(name = "category_type_id", referencedColumnName = "id")
     private CategoryType categoryType;
@@ -17,11 +22,18 @@ public class Budget {
     @Column(name = "value")
     private double value;
 
-    @Column(name = "start_date")
-    private String startDate;
+    @Column(name = "date")
+    private String date;
 
-    @Column(name = "end_date")
-    private String endDate;
+    public Budget() {
+    }
+
+    public Budget(PostBudgetDetails budgetDetails, Long userId) {
+        this.userId = userId;
+        this.value = budgetDetails.getValue();
+        this.categoryType = new CategoryType(budgetDetails.getTypeId());
+        this.date = budgetDetails.getDate();
+    }
 
     public Long getId() {
         return id;
@@ -39,27 +51,27 @@ public class Budget {
         this.value = value;
     }
 
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
     public CategoryType getCategoryType() {
         return categoryType;
     }
 
     public void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

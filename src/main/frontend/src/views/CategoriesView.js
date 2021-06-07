@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Category from "../components/Category";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Link} from 'react-router-dom';
@@ -82,7 +82,6 @@ const useStyles = makeStyles((theme) => ({
 
 const CategoriesView = (props) => {
     const classes = useStyles();
-    const hasMounted = useRef(false);
     const [open, setOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [categoriesTypes, setCategoriesTypes] = useState([]);
@@ -97,7 +96,7 @@ const CategoriesView = (props) => {
     };
     const setLogged = props.setLogged;
     const [date, setDate] = useState(() => {
-        if(props.location.initialDate){
+        if (props.location.initialDate) {
             return props.location.initialDate;
         }
         const now = new Date();
@@ -106,6 +105,11 @@ const CategoriesView = (props) => {
     });
 
     useEffect(() => {
+        setCategories({
+            isLoaded: false,
+            data: []
+        });
+
         axios.get(getCategoriesURL + date, jwtConfig)
             .then(resp => {
                 setCategories({
@@ -119,38 +123,14 @@ const CategoriesView = (props) => {
                     message: unauthorizedMessage
                 }));
             });
+    }, [date])
 
+    useEffect(() => {
         axios.get(getCategoryTypesURL, jwtConfig)
             .then(resp => {
                 setCategoriesTypes(resp.data);
             })
     }, [])
-
-    useEffect(() => {
-        if(!hasMounted.current){
-            hasMounted.current = true
-        }
-        else {
-            setCategories({
-                isLoaded: false,
-                data: []
-            })
-
-            axios.get(getCategoriesURL + date,jwtConfig)
-                .then(resp => {
-                    setCategories({
-                        isLoaded: true,
-                        data: resp.data.map(el => ({...el, transactionsValue: el.transactionsValue.toFixed(2)}))
-                    });
-                })
-                .catch(() => {
-                    setLogged(() => ({
-                        redirect: true,
-                        message: unauthorizedMessage
-                    }));
-                });
-        }
-    },[date])
 
     const handleAddCategory = () => {
         if (selectedCategory.length !== 0) {

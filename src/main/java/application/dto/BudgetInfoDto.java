@@ -1,57 +1,45 @@
 package application.dto;
 
-public class BudgetInfoDto {
-    private double value;
-    private String startDate;
-    private String endDate;
-    private String typeName;
-    private String color;
+import application.database.models.Budget;
 
-    public BudgetInfoDto(double value, String startDate, String endDate, String typeName, String color) {
-        this.value = value;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.typeName = typeName;
-        this.color = color;
+public class BudgetInfoDto {
+    private final Long id;
+    private final double value;
+    private final String date;
+    private final String typeName;
+    private final String color;
+    private final String icon;
+
+    public BudgetInfoDto(Budget budget){
+        this.id = budget.getId();
+        this.value = budget.getValue();
+        this.date = budget.getDate();
+        this.typeName = budget.getCategoryType().getName();
+        this.color = budget.getCategoryType().getColor();
+        this.icon = budget.getCategoryType().getIcon();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public double getValue() {
         return value;
     }
 
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public String getDate() {
+        return date;
     }
 
     public String getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
     public String getColor() {
         return color;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public String getIcon() {
+        return icon;
     }
 }

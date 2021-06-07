@@ -21,6 +21,11 @@ public class CategoryType {
     public CategoryType() {
     }
 
+
+    public CategoryType(long id){
+        this.id = id;
+    }
+
     public CategoryType(Long id, String name, String icon, String color) {
         this.id = id;
         this.name = name;

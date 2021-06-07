@@ -3,6 +3,7 @@ import {ListItem, ListItemAvatar, ListItemText, Avatar, LinearProgress} from "@m
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import iconPicker from "../assets/iconPicker";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,25 +49,19 @@ const BorderLinearProgress = withStyles((theme) => ({
 
 const Budget = (props) => {
     const classes = useStyles();
-    const [progress,setProgress] = useState(0);
-
-    useEffect(() =>{
-        const progress = props.data.progress
-        setProgress(progress)
-    },[]);
 
     return (
         <ListItem button classes={{root: classes.listItem}}>
             <ListItemAvatar>
                 <Avatar classes={{root: classes.avatar}} style={{background: props.data.color}}>
-                    <FontAwesomeIcon icon={props.data.icon} style={{color: "#ffffff"}}/>
+                    <FontAwesomeIcon icon={iconPicker(props.data.icon)} style={{color: "#ffffff"}}/>
                 </Avatar>
             </ListItemAvatar>
             <div style={{width:"80%"}}>
-                <ListItemText primary={props.data.title}  classes={{primary: classes.budgetTitle}}/>
-                <BorderLinearProgress variant="determinate" value={progress}/>
+                <ListItemText primary={props.data.typeName}  classes={{primary: classes.budgetTitle}}/>
+                <BorderLinearProgress variant="determinate" value={props.data.progress}/>
             </div>
-            <ListItemText primary={"500.00 zł"} secondary={"Left 400.00 zł"}
+            <ListItemText primary={`${props.data.value} zł`} secondary={"Left 400.00 zł"}
                           classes={{root: classes.budgetValueAlign, primary: classes.budgetValue}}/>
         </ListItem>
     )

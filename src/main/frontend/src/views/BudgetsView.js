@@ -19,7 +19,7 @@ import {faPlane, faPlus, faShoppingCart, faSmileBeam,} from "@fortawesome/free-s
 import {blue, green, orange} from "@material-ui/core/colors";
 import Budget from "../components/Budget";
 import axios from "axios";
-import {getBudgetsURL, getCategoryTypesURL, unauthorizedMessage} from "../assets/properties";
+import {getBudgetsURL, getCategoryTypesURL, postBudgetURL, unauthorizedMessage} from "../assets/properties";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import iconPicker from "../assets/iconPicker";
 
@@ -96,6 +96,7 @@ const BudgetsView = (props) => {
         data: []
     })
     const [selectedBudget, setSelectedBudget] = useState([])
+    const [selectedBudgetValue, setSelectedBudgetValue] = useState("")
     const [categoriesTypes, setCategoriesTypes] = useState([]);
     const [date, setDate] = useState(() => {
         const now = new Date();
@@ -142,10 +143,49 @@ const BudgetsView = (props) => {
             })
     }, [])
 
+    function handleAddBudget() {
+        if(selectedBudgetValue !== "" && selectedBudget.length !== 0) {
+            console.log({
+                ...selectedBudget,
+                date: date,
+                value: selectedBudgetValue,
+            })
+            axios.post(postBudgetURL, {
+                ...selectedBudget,
+                date: date,
+                value: selectedBudgetValue,
+            }, jwtConfig)
+                .then(resp => {
+                    resp.data.value = parseFloat(resp.data.value).toFixed(2)
+                    setBudgetsList(prev => ({
+                        isLoaded: true,
+                        data: [...prev.data, resp.data]
+
+                    }))
+                })
+
+            setOpen(false);
+            setSelectedBudget([])
+            setSelectedBudgetValue("");
+        }
+        else {
+            alert("Fill all inputs")
+        }
+    }
+
     const handleClose = () => {
         setOpen(false);
         setSelectedBudget([])
+        setSelectedBudgetValue("");
     };
+
+    function validateInput() {
+        let value = selectedBudgetValue;
+        if (value < 0) {
+            value = 1;
+        }
+        setSelectedBudgetValue(parseFloat(value).toFixed(2))
+    }
 
 
     return (
@@ -202,13 +242,17 @@ const BudgetsView = (props) => {
                                 }
                             </Select>
                             <TextField id="BudgetGoal" className="TextInput" label="Value" variant="outlined"
+                                       type="number"
+                                       value={selectedBudgetValue}
+                                       onChange={event => setSelectedBudgetValue(event.target.value)}
+                                       onBlur={validateInput}
                                        classes={{root: classes.dialogInputs}}/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">
                                 Cancel
                             </Button>
-                            <Button onClick={handleClose} color="primary">
+                            <Button onClick={handleAddBudget} color="primary">
                                 Confirm
                             </Button>
                         </DialogActions>

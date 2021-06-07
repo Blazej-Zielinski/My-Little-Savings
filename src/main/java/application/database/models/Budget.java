@@ -31,7 +31,12 @@ public class Budget {
     public Budget(PostBudgetDetails budgetDetails, Long userId) {
         this.userId = userId;
         this.value = budgetDetails.getValue();
-        this.categoryType = new CategoryType(budgetDetails.getTypeId());
+        this.categoryType = new CategoryType(
+                budgetDetails.getId(),
+                budgetDetails.getName(),
+                budgetDetails.getIcon(),
+                budgetDetails.getColor()
+        );
         this.date = budgetDetails.getDate();
     }
 

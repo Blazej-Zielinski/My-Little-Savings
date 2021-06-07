@@ -139,7 +139,6 @@ const CategoriesView = (props) => {
                 date: date
             }, jwtConfig)
                 .then(resp => {
-                    console.log(resp.data)
                     setCategories((prev) => ({
                         isLoaded: true,
                         data: [

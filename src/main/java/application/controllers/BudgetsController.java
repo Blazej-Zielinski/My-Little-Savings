@@ -33,14 +33,13 @@ public class BudgetsController {
     }
 
     @PostMapping("add")
-    public Boolean add(@RequestBody PostBudgetDetails budgetDetails){
+    public BudgetInfoDto add(@RequestBody PostBudgetDetails budgetDetails){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         long userId = Long.parseLong(authentication.getName());
 
-        Budget budget = new Budget(budgetDetails, userId);
-
-        budgetDao.save(budget);
-        return true;
+        Long newBudgetId = budgetDao.save(new Budget(budgetDetails, userId)).getId();
+        Budget newBudget = budgetDao.getOne(newBudgetId);
+        return new BudgetInfoDto(newBudget);
     }
 
     @DeleteMapping("delete/{id}")

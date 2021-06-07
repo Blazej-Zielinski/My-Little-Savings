@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/*").authenticated()
-                .antMatchers("/budgets/*").hasRole("PREMIUM")
+                .antMatchers("/budgets/**").hasRole("PREMIUM")
                 .and()
                 .addFilter(new JwtFilter(authenticationManager(),secret));
 

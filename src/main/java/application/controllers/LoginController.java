@@ -15,9 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -61,16 +58,6 @@ public class LoginController {
                 .setExpiration(new Date(currentTimeMillis + expirationDate))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact());
-
-//        Cookie jwtTokenCookie = new Cookie("jwtToken", jwtToken);
-//        jwtTokenCookie.setMaxAge(expirationDate.intValue() / 1000);
-////        jwtTokenCookie.setHttpOnly(true);
-//
-//        response.addCookie(jwtTokenCookie);
-//        response.addHeader("Access-Control-Allow-Credentials","true");
-//        response.addHeader("Access-Control-Allow-Origin","http://localhost:3000");
-//
-//        return true;
     }
 
     @PostMapping("/register")

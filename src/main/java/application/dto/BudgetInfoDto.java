@@ -5,14 +5,16 @@ import application.database.models.Budget;
 public class BudgetInfoDto {
     private final Long id;
     private final double value;
+    private final double spentValue;
     private final String date;
     private final String typeName;
     private final String color;
     private final String icon;
 
-    public BudgetInfoDto(Budget budget){
+    public BudgetInfoDto(Budget budget, double spentValue){
         this.id = budget.getId();
         this.value = budget.getValue();
+        this.spentValue = spentValue;
         this.date = budget.getDate();
         this.typeName = budget.getCategoryType().getName();
         this.color = budget.getCategoryType().getColor();
@@ -41,5 +43,9 @@ public class BudgetInfoDto {
 
     public String getIcon() {
         return icon;
+    }
+
+    public double getSpentValue() {
+        return spentValue;
     }
 }

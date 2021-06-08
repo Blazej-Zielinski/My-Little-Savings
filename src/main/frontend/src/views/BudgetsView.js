@@ -70,30 +70,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const budgets = [
-    {
-        title: "Shopping",
-        icon: faShoppingCart,
-        color: orange[500],
-        progress: 50,
-        key: 1
-    },
-    {
-        title: "Entertainment",
-        icon: faSmileBeam,
-        color: blue[500],
-        progress: 70,
-        key: 2
-    },
-    {
-        title: "Travel",
-        icon: faPlane,
-        color: green[500],
-        progress: 100,
-        key: 3
-    },
-]
-
 const BudgetsView = (props) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
@@ -124,10 +100,14 @@ const BudgetsView = (props) => {
 
         axios.get(getBudgetsURL + date, jwtConfig)
             .then(resp => {
-                let budgets = resp.data.map(budget => ({
-                    ...budget,
-                    value: budget.value.toFixed(2)
-                }))
+                console.log(resp.data)
+                let budgets = resp.data.map(budget => {
+                    budget.value = parseFloat(budget.value).toFixed(2);
+                    budget.spentValue = budget.spentValue < 0 ? (parseFloat(budget.value) + parseFloat(budget.spentValue)).toFixed(2) : (budget.value);
+                    budget.progress = ((parseFloat(budget.value) - parseFloat(budget.spentValue)) / parseFloat(budget.value)) * 100;
+                    budget.progress = budget.progress > 100 ? 100 : budget.progress;
+                    return {...budget}
+                })
 
                 setBudgetsList({
                     isLoaded: true,
@@ -150,22 +130,21 @@ const BudgetsView = (props) => {
     }, [])
 
     function handleAddBudget() {
-        if(selectedBudgetValue !== "" && selectedBudget.length !== 0) {
-            console.log({
-                ...selectedBudget,
-                date: date,
-                value: selectedBudgetValue,
-            })
+        if (selectedBudgetValue !== "" && selectedBudget.length !== 0) {
             axios.post(postBudgetURL, {
                 ...selectedBudget,
                 date: date,
                 value: selectedBudgetValue,
             }, jwtConfig)
                 .then(resp => {
-                    resp.data.value = parseFloat(resp.data.value).toFixed(2)
+                    let data = resp.data;
+                    data.value = parseFloat(data.value).toFixed(2);
+                    data.spentValue = data.spentValue < 0 ? (parseFloat(data.value) + parseFloat(data.spentValue)).toFixed(2) : data.value;
+                    data.progress = (((parseFloat(data.value) - parseFloat(data.spentValue)) / parseFloat(data.value)) * 100);
+                    data.progress = data.progress > 100 ? 100 : data.progress;
                     setBudgetsList(prev => ({
                         isLoaded: true,
-                        data: [...prev.data, resp.data]
+                        data: [...prev.data, data]
 
                     }))
                 })
@@ -173,8 +152,7 @@ const BudgetsView = (props) => {
             setOpen(false);
             setSelectedBudget([])
             setSelectedBudgetValue("");
-        }
-        else {
+        } else {
             alert("Fill all inputs")
         }
     }

@@ -29,28 +29,33 @@ const useStyles = makeStyles((theme) => ({
         color: "#039BE5",
         fontWeight: "bold"
     },
-    budgetTitle:{
-      fontSize: "1.3em",
+    budgetTitle: {
+        fontSize: "1.3em",
     },
 }));
 
-const BorderLinearProgress = withStyles((theme) => ({
-    root: {
-        height: 10,
-        borderRadius: 5,
-        width:"100%",
-    },
-    colorPrimary: {
-        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
-    },
-    bar: {
-        borderRadius: 5,
-        backgroundColor: '#1a90ff',
-    },
-}))(LinearProgress);
-
 const Budget = (props) => {
     const classes = useStyles();
+
+    const BorderLinearProgress = withStyles((theme) => ({
+        root: {
+            height: 10,
+            borderRadius: 5,
+            width: "100%",
+        },
+        colorPrimary: {
+            backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+        },
+        bar: props.data.spentValue > 0 ?
+            {
+                borderRadius: 5,
+                backgroundColor: '#1a90ff',
+            } :
+            {
+                borderRadius: 5,
+                backgroundColor: '#FB0A43',
+            }
+    }))(LinearProgress);
 
     return (
         <ListItem button classes={{root: classes.listItem}}>
@@ -59,13 +64,20 @@ const Budget = (props) => {
                     <FontAwesomeIcon icon={iconPicker(props.data.icon)} style={{color: "#ffffff"}}/>
                 </Avatar>
             </ListItemAvatar>
-            <div style={{width:"80%"}}>
-                <ListItemText primary={props.data.typeName}  classes={{primary: classes.budgetTitle}}/>
+            <div style={{width: "80%"}}>
+                <ListItemText primary={props.data.typeName} classes={{primary: classes.budgetTitle}}/>
                 <BorderLinearProgress variant="determinate" value={props.data.progress}/>
             </div>
-            <ListItemText primary={`${props.data.value} zł`} secondary={"Left 400.00 zł"}
+            <ListItemText primary={`${props.data.value} zł`}
+                          secondary={
+                              props.data.spentValue > 0 ?
+                                  `Left ${props.data.spentValue} zł` :
+                                  `Over ${Math.abs(props.data.spentValue).toFixed(2)} zł`
+                          }
                           classes={{root: classes.budgetValueAlign, primary: classes.budgetValue}}/>
-            <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={() => {props.handleDeleteBudget(props.data.id)}}>
+            <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={() => {
+                props.handleDeleteBudget(props.data.id)
+            }}>
                 <Delete/>
             </IconButton>
         </ListItem>

@@ -23,16 +23,6 @@ public class TransactionsController {
     @Autowired
     private CategoryDao categoryDao;
 
-    @GetMapping("get")
-    public TransactionInfoDto get() {
-        Transaction transaction = transactionDao.getOne(1L);
-        return new TransactionInfoDto(
-                transaction.getId(),
-                transaction.getName(),
-                transaction.getValue(),
-                transaction.getDate()
-        );
-    }
 
     @GetMapping("getAll/{id}")
     public TransactionsAndCategoryDto getAll(@RequestParam("id") Long categoryId) {

@@ -13,8 +13,6 @@ public class UserRole {
     @Column(name = "role_name")
     private String roleName;
 
-    @Column(name = "permission")
-    private int permission;
 
     public UserRole() {
     }
@@ -39,11 +37,4 @@ public class UserRole {
         this.roleName = roleName;
     }
 
-    public int getPermission() {
-        return permission;
-    }
-
-    public void setPermission(int permission) {
-        this.permission = permission;
-    }
 }

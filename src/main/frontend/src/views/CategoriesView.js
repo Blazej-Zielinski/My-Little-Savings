@@ -28,8 +28,7 @@ import {
     deleteCategoryURL,
     getCategoriesURL,
     getCategoryTypesURL,
-    postCategory,
-    unauthorizedMessage
+    postCategory
 } from "../assets/properties";
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 import iconPicker from "../assets/iconPicker";
@@ -94,7 +93,6 @@ const CategoriesView = (props) => {
             Authorization: "Bearer " + localStorage.getItem(authTokenName)
         }
     };
-    const setLogged = props.setLogged;
     const [date, setDate] = useState(() => {
         if (props.location.initialDate) {
             return props.location.initialDate;
@@ -117,12 +115,6 @@ const CategoriesView = (props) => {
                     data: resp.data.map(el => ({...el, transactionsValue: el.transactionsValue.toFixed(2)}))
                 });
             })
-            .catch(() => {
-                setLogged(() => ({
-                    redirect: true,
-                    message: unauthorizedMessage
-                }));
-            });
     }, [date])
 
     useEffect(() => {

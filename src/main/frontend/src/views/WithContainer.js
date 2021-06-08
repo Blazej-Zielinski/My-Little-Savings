@@ -8,7 +8,7 @@ import TransactionView from "./TransactionsView";
 import BudgetsView from "./BudgetsView";
 import SummaryView from "./SummaryView";
 import axios from "axios";
-import {getLoggedUsernameUrl, authTokenName} from "../assets/properties";
+import {getLoggedUsernameUrl, authTokenName, unauthorizedMessage} from "../assets/properties";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -59,6 +59,12 @@ const WithContainer = (props) => {
     useEffect(() => {
         axios.get(getLoggedUsernameUrl, jwtConfig)
             .then(resp => setLoggedUsername(resp.data.username))
+            .catch(() => {
+                setLogged(() => ({
+                    redirect: true,
+                    message: unauthorizedMessage
+                }));
+            })
     }, [])
 
     return (

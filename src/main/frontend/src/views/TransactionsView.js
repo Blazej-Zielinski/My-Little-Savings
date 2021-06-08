@@ -19,13 +19,7 @@ import {faPlus,} from "@fortawesome/free-solid-svg-icons";
 import Transaction from "../components/Transaction";
 import {Link, useParams} from 'react-router-dom';
 import axios from "axios";
-import {
-    confirmDeleteMessage,
-    deleteTransactionURL,
-    getTransactions,
-    postTransaction,
-    unauthorizedMessage
-} from "../assets/properties";
+import {confirmDeleteMessage, deleteTransactionURL, getTransactions, postTransaction} from "../assets/properties";
 import iconPicker from "../assets/iconPicker";
 import date from 'date-and-time';
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
@@ -81,7 +75,7 @@ function comparator(a, b) {
     return (a.day > b.day) ? 1 : (a.day === b.day) ? ((a.day > b.day) ? 1 : -1) : -1
 }
 
-const TransactionView = (props) => {
+const TransactionView = () => {
     const classes = useStyles();
     const {id} = useParams();
     const [open, setOpen] = useState(false);
@@ -100,7 +94,6 @@ const TransactionView = (props) => {
             Authorization: "Bearer " + localStorage.getItem("jwtToken")
         }
     };
-    const setLogged = props.setLogged;
 
     useEffect(() => {
         axios.get(getTransactions + id, jwtConfig)
@@ -121,12 +114,6 @@ const TransactionView = (props) => {
                 setCategory(categoryInfo);
                 setTransactionsList({isLoaded: true, data: transactions.sort(comparator)});
             })
-            .catch(() => {
-                setLogged(() => ({
-                    redirect: true,
-                    message: unauthorizedMessage
-                }));
-            });
     }, [])
 
     const handleAddTransaction = () => {

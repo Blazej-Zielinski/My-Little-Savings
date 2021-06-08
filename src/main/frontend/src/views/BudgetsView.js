@@ -26,11 +26,11 @@ import {
     deleteBudgetURL,
     getBudgetsURL,
     getCategoryTypesURL,
-    postBudgetURL,
-    unauthorizedMessage
+    postBudgetURL
 } from "../assets/properties";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import iconPicker from "../assets/iconPicker";
+import PanToolIcon from '@material-ui/icons/PanTool';
 
 const useStyles = makeStyles((theme) => ({
     cardHeader: {
@@ -73,8 +73,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const BudgetsView = (props) => {
+const BudgetsView = () => {
     const classes = useStyles();
+    const [isPremiumUser, setIsPremiumUser] = useState(true)
     const [open, setOpen] = useState(false);
     const [budgetsList, setBudgetsList] = useState({
         isLoaded: false,
@@ -93,7 +94,6 @@ const BudgetsView = (props) => {
             Authorization: "Bearer " + localStorage.getItem("jwtToken")
         }
     };
-    const setLogged = props.setLogged;
 
     useEffect(() => {
         setBudgetsList({
@@ -103,7 +103,6 @@ const BudgetsView = (props) => {
 
         axios.get(getBudgetsURL + date, jwtConfig)
             .then(resp => {
-                console.log(resp.data)
                 let budgets = resp.data.map(budget => {
                     budget.value = parseFloat(budget.value).toFixed(2);
                     budget.spentValue = budget.spentValue < 0 ? (parseFloat(budget.value) + parseFloat(budget.spentValue)).toFixed(2) : (budget.value);
@@ -118,11 +117,8 @@ const BudgetsView = (props) => {
                 })
             })
             .catch(() => {
-                setLogged(() => ({
-                    redirect: true,
-                    message: unauthorizedMessage
-                }));
-            });
+                setIsPremiumUser(false)
+            })
     }, [date])
 
     useEffect(() => {
@@ -186,102 +182,118 @@ const BudgetsView = (props) => {
 
     return (
         <div>
-            <Paper elevation={5} classes={{root: classes.card}}>
-                <div className={classes.cardHeader}>
-                    <TextField
-                        id="date"
-                        type="month"
-                        value={date}
-                        onChange={event => setDate(event.target.value)}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <Button
-                        variant="contained"
-                        classes={{root: classes.addButton}}
-                        color="primary"
-                        startIcon={<FontAwesomeIcon icon={faPlus}/>}
-                        onClick={() => setOpen(true)}
-                    >
-                        Add Budget
-                    </Button>
-                    <Dialog open={open} onClose={handleClose} classes={{paper: classes.dialog}}>
-                        <DialogTitle id="form-dialog-title">Add Budget</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                Create a budget. Set budget name and goal.
-                            </DialogContentText>
-                            <Select
-                                labelId="select"
-                                id="categorySelect"
-                                value={selectedBudget}
-                                onChange={event => {
-                                    setSelectedBudget(event.target.value)
+            {
+                !isPremiumUser ?
+                    <Paper elevation={5} classes={{root: classes.card}}>
+                        <div style={{
+                            width: "100%",
+                            paddingTop: "4em",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center"
+                        }}>
+                            <PanToolIcon style={{fontSize: 100}}/>
+                            <div>For Premium Users Only!</div>
+                        </div>
+                    </Paper>
+                    :
+                    <Paper elevation={5} classes={{root: classes.card}}>
+                        <div className={classes.cardHeader}>
+                            <TextField
+                                id="date"
+                                type="month"
+                                value={date}
+                                onChange={event => setDate(event.target.value)}
+                                InputLabelProps={{
+                                    shrink: true,
                                 }}
-                                style={{width: "100%"}}
-                                classes={{root: classes.select}}
+                            />
+                            <Button
+                                variant="contained"
+                                classes={{root: classes.addButton}}
+                                color="primary"
+                                startIcon={<FontAwesomeIcon icon={faPlus}/>}
+                                onClick={() => setOpen(true)}
                             >
-                                {
-                                    categoriesTypes.map((category, index) => (
-                                        <MenuItem key={index} value={category}>
-                                            <ListItemAvatar>
-                                                <Avatar classes={{root: classes.avatar}}
-                                                        style={{background: category.color}}>
-                                                    <FontAwesomeIcon icon={iconPicker(category.icon)}
-                                                                     style={{color: "#ffffff"}}/>
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            {category.name}
-                                        </MenuItem>
-                                    ))
-                                }
-                            </Select>
-                            <TextField id="BudgetGoal" className="TextInput" label="Value" variant="outlined"
-                                       type="number"
-                                       value={selectedBudgetValue}
-                                       onChange={event => setSelectedBudgetValue(event.target.value)}
-                                       onBlur={validateInput}
-                                       classes={{root: classes.dialogInputs}}/>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose} color="primary">
-                                Cancel
+                                Add Budget
                             </Button>
-                            <Button onClick={handleAddBudget} color="primary">
-                                Confirm
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <Divider/>
-                <List classes={{root: classes.list}}>
-                    {
-                        !budgetsList.isLoaded ?
-                            <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
-                                <CircularProgress size={100} thickness={5}/>
-                            </div>
-                            :
-                            budgetsList.data.length === 0 ?
-                                <div style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center"
-                                }}>
-                                    <SentimentDissatisfiedIcon style={{fontSize: 100}}/>
-                                    <div>No Data</div>
-                                </div>
-                                :
-                                budgetsList.data.map((budget, index) =>
-                                    <Budget
-                                        key={index}
-                                        data={budget}
-                                        handleDeleteBudget={handleDeleteBudget}
-                                    />)
-                    }
-                </List>
-            </Paper>
+                            <Dialog open={open} onClose={handleClose} classes={{paper: classes.dialog}}>
+                                <DialogTitle id="form-dialog-title">Add Budget</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        Create a budget. Set budget name and goal.
+                                    </DialogContentText>
+                                    <Select
+                                        labelId="select"
+                                        id="categorySelect"
+                                        value={selectedBudget}
+                                        onChange={event => {
+                                            setSelectedBudget(event.target.value)
+                                        }}
+                                        style={{width: "100%"}}
+                                        classes={{root: classes.select}}
+                                    >
+                                        {
+                                            categoriesTypes.map((category, index) => (
+                                                <MenuItem key={index} value={category}>
+                                                    <ListItemAvatar>
+                                                        <Avatar classes={{root: classes.avatar}}
+                                                                style={{background: category.color}}>
+                                                            <FontAwesomeIcon icon={iconPicker(category.icon)}
+                                                                             style={{color: "#ffffff"}}/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    {category.name}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                    <TextField id="BudgetGoal" className="TextInput" label="Value" variant="outlined"
+                                               type="number"
+                                               value={selectedBudgetValue}
+                                               onChange={event => setSelectedBudgetValue(event.target.value)}
+                                               onBlur={validateInput}
+                                               classes={{root: classes.dialogInputs}}/>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleClose} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={handleAddBudget} color="primary">
+                                        Confirm
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </div>
+                        <Divider/>
+                        <List classes={{root: classes.list}}>
+                            {
+                                !budgetsList.isLoaded ?
+                                    <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+                                        <CircularProgress size={100} thickness={5}/>
+                                    </div>
+                                    :
+                                    budgetsList.data.length === 0 ?
+                                        <div style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center"
+                                        }}>
+                                            <SentimentDissatisfiedIcon style={{fontSize: 100}}/>
+                                            <div>No Data</div>
+                                        </div>
+                                        :
+                                        budgetsList.data.map((budget, index) =>
+                                            <Budget
+                                                key={index}
+                                                data={budget}
+                                                handleDeleteBudget={handleDeleteBudget}
+                                            />)
+                            }
+                        </List>
+                    </Paper>
+            }
         </div>
     )
 }

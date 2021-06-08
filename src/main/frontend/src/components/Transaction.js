@@ -3,10 +3,8 @@ import {ListItem, ListItemAvatar, ListItemText} from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import IconButton from "@material-ui/core/IconButton";
 import {Delete} from "@material-ui/icons";
-import axios from "axios";
-import {confirmDeleteMessage, deleteTransactionURL} from "../assets/properties";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     listItem: {
         borderRadius: "1em",
         transition: "transform 0.3s",
@@ -45,11 +43,14 @@ const Transaction = (props) => {
             <ListItemText primary={props.data.name} secondary={props.data.date} classes={{primary: classes.titleText}}/>
             {
                 props.data.value >= 0 ?
-                    <ListItemText primary={"+" + props.data.value + "zł"} classes={{primary: classes.categoryCostPositive}}/>
+                    <ListItemText primary={"+" + props.data.value + "zł"}
+                                  classes={{primary: classes.categoryCostPositive}}/>
                     :
                     <ListItemText primary={props.data.value + "zł"} classes={{primary: classes.categoryCostNegative}}/>
             }
-            <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={() => {props.handleDeleteTransaction(props.data.id)}}>
+            <IconButton color="secondary" component="span" style={{marginLeft: 5}} onClick={() => {
+                props.handleDeleteTransaction(props.data.id)
+            }}>
                 <Delete/>
             </IconButton>
         </ListItem>

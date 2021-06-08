@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {ListItem, ListItemAvatar, ListItemText, Avatar, LinearProgress} from "@material-ui/core";
+import React from "react";
+import {Avatar, LinearProgress, ListItem, ListItemAvatar, ListItemText} from "@material-ui/core";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -8,7 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import {Delete} from "@material-ui/icons";
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     listItem: {
         borderRadius: "1em",
         transition: "transform 0.3s",

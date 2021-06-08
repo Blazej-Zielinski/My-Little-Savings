@@ -9,18 +9,21 @@ import {
     DialogContentText,
     DialogTitle,
     Divider,
-    List, ListItemAvatar, MenuItem,
-    Paper, Select,
+    List,
+    ListItemAvatar,
+    MenuItem,
+    Paper,
+    Select,
     TextField
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlane, faPlus, faShoppingCart, faSmileBeam,} from "@fortawesome/free-solid-svg-icons";
-import {blue, green, orange} from "@material-ui/core/colors";
+import {faPlus,} from "@fortawesome/free-solid-svg-icons";
 import Budget from "../components/Budget";
 import axios from "axios";
 import {
-    confirmDeleteMessage, deleteBudgetURL,
+    confirmDeleteMessage,
+    deleteBudgetURL,
     getBudgetsURL,
     getCategoryTypesURL,
     postBudgetURL,
